@@ -52,7 +52,19 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![open_view])
         .setup(|app| {
-            open_or_focus_view(app.handle(), "main")?;
+            let args: Vec<String> = std::env::args().collect();
+            let mut initial_view = "master-hub";
+
+            let mut iter = args.iter();
+            while let Some(arg) = iter.next() {
+                if arg == "--view" {
+                    if let Some(view_name) = iter.next() {
+                        initial_view = view_name.as_str();
+                    }
+                }
+            }
+
+            open_or_focus_view(app.handle(), initial_view)?;
             Ok(())
         })
         .run(tauri::generate_context!())

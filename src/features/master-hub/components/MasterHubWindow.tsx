@@ -9,7 +9,7 @@ interface ActivityPayload {
 }
 
 export default function MasterHubWindow() {
-  const [xp, setXp] = useState(0);
+  const [_, setXp] = useState(0);
 
   useEffect(() => {
     const unlisten = listen<ActivityPayload>("activity_completed", (event) => {
