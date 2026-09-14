@@ -1,7 +1,7 @@
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 
 #[tauri::command]
-fn open_view(app: AppHandle, view_name: String) -> Result<(), String> {
+async fn open_view(app: AppHandle, view_name: String) -> Result<(), String> {
     open_or_focus_view(&app, &view_name).map_err(|e| e.to_string())
 }
 

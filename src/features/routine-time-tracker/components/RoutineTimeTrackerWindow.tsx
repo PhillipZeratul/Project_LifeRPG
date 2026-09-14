@@ -5,14 +5,13 @@ export default function RoutineTimeTrackerWindow() {
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
 
-  (useEffect(() => {
+  useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (isRunning && secondsLeft > 0) {
       interval = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
     }
     return () => clearInterval(interval);
-  }),
-    [isRunning, secondsLeft]);
+  }, [isRunning, secondsLeft]);
 
   const finishSession = async () => {
     setIsRunning(false);
