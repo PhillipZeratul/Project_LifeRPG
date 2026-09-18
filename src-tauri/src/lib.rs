@@ -1,5 +1,17 @@
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 
+fn parse_target_view(args: &[String]) -> String {
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
+        if arg == "--view" {
+            if let Some(val) = iter.next() {
+                return val.clone();
+            }
+        }
+    }
+    "master-hub".to_string()
+}
+
 #[tauri::command]
 async fn open_view(app: AppHandle, view_name: String) -> Result<(), String> {
     open_or_focus_view(&app, &view_name).map_err(|e| e.to_string())
@@ -28,6 +40,8 @@ fn open_or_focus_view(app: &AppHandle, view_name: &str) -> tauri::Result<()> {
         })
         .inner_size(width, height)
         .always_on_top(always_on_top)
+        .resizable(view_name == "master-hub")
+        .decorations(true)
         .build()?;
 
     Ok(())
@@ -36,35 +50,19 @@ fn open_or_focus_view(app: &AppHandle, view_name: &str) -> tauri::Result<()> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Handle when app is ALREADY running and user clicked shortcut.
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
-            let mut target_view = "master-hub";
-            let mut iter = args.iter();
-            while let Some(arg) = iter.next() {
-                if arg == "--view" {
-                    if let Some(view_name) = iter.next() {
-                        target_view = view_name.as_str();
-                    }
-                }
-            }
-            let _ = open_or_focus_view(app, target_view);
+            let target_view = parse_target_view(&args);
+            let _ = open_or_focus_view(app, &target_view);
         }))
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![open_view])
+        // Handle COLD BOOT.
         .setup(|app| {
             let args: Vec<String> = std::env::args().collect();
-            let mut initial_view = "master-hub";
-
-            let mut iter = args.iter();
-            while let Some(arg) = iter.next() {
-                if arg == "--view" {
-                    if let Some(view_name) = iter.next() {
-                        initial_view = view_name.as_str();
-                    }
-                }
-            }
-
-            open_or_focus_view(app.handle(), initial_view)?;
+            let target_view = parse_target_view(&args);
+            open_or_focus_view(app.handle(), &target_view)?;
             Ok(())
         })
         .run(tauri::generate_context!())
