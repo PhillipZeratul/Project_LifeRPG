@@ -14,12 +14,17 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Path aliases */
+    "paths": {
+      "@liferpg/sdk": ["./packages/sdk/src/index.ts"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "packages/sdk"],
+  "include": ["src", "packages/sdk/src", "packages/host-runtime/src/"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

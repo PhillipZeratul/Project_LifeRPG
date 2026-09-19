@@ -67,6 +67,14 @@ importers:
         specifier: ^8.0.16
         version: 8.2.2(jiti@2.7.0)
 
+  packages/host-runtime:
+    dependencies:
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+
+  packages/sdk: {}
+
 packages:
 
   '@cacheable/memory@2.2.0':
