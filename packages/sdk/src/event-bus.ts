@@ -1,20 +1,15 @@
-import type { IEventBus, EventCallback } from './types';
+import type { IEventBus, EventCallback } from "./types";
 
-export abstract class BaseEventBus implements IEventBus {
-
+export class BaseEventBus implements IEventBus {
     protected listeners: Map<string, Set<EventCallback<never>>> = new Map();
 
-    protected addListener<T = unknown>(event: string, callback: EventCallback<T>): void {
+    public on<T = unknown>(event: string, callback: EventCallback<T>): () => void {
         let handlers = this.listeners.get(event);
         if (!handlers) {
             handlers = new Set();
             this.listeners.set(event, handlers);
         }
         handlers.add(callback as EventCallback<never>);
-    }
-
-    public on<T = unknown>(event: string, callback: EventCallback<T>): () => void {
-        this.addListener(event, callback);
         return () => this.off(event, callback);
     }
 
@@ -38,7 +33,7 @@ export abstract class BaseEventBus implements IEventBus {
                 } catch (error) {
                     console.error(`[Event Bus] Error occurred while emitting event '${event}':`, error);
                 }
-            })
+            });
         }
     }
 }

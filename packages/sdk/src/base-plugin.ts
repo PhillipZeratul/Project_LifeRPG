@@ -1,9 +1,9 @@
-import type { PluginContext } from "./types";
+import type { IPluginContext } from "./types";
 
 export abstract class BasePlugin {
-    protected context: PluginContext;
+    protected context: IPluginContext;
 
-    constructor(context: PluginContext) {
+    constructor(context: IPluginContext) {
         this.context = context;
     }
 
