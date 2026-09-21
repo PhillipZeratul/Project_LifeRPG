@@ -1,4 +1,4 @@
-import FocusTimerPlugin, { FocusTimerService} from "@liferpg/plugins/core/timer";
+import FocusTimerPlugin, { FocusTimerService} from "@liferpg/plugin-core-timer";
 import { CentralEventBus } from "./central-event-bus";
 import { CentralServiceRegistry } from "./central-service-registry";
 import { PluginManager } from "./plugin-manager";
@@ -7,7 +7,7 @@ const bus = new CentralEventBus();
 const registry = new CentralServiceRegistry();
 const manager = new PluginManager(bus, registry);
 
-async function bootstrap() {
+export async function bootstrap() {
     bus.on("timer:finished", (event: { duration: number }) => {
         console.log(`[Central] Timer finished! +${event.duration * 2} EXP rewarded.`);
     });

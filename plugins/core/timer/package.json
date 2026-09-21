@@ -1,5 +1,5 @@
 {
-  "name": "@liferpg/sdk",
+  "name": "@liferpg/plugin-core-timer",
   "version": "0.1.0",
   "type": "module",
   "main": "./src/index.ts",
@@ -11,7 +11,11 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "vite build",
     "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@liferpg/sdk": "workspace:*",
+    "vite": "^8.0.16"
   }
 }

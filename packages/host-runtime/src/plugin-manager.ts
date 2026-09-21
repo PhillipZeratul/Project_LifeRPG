@@ -33,7 +33,7 @@ export class PluginManager {
     async unLoadPlugin(id: string) {
         const instance = this.plugins.get(id);
         if (instance) {
-            await instance.onLoad();
+            await instance.onUnload();
             this.plugins.delete(id);
             console.log(`[Host] Unloaded plugin ${id}`);
         }

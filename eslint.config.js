@@ -6,25 +6,22 @@ export default defineConfig(
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        files: ['**/*.{ts, tsx}'],
+        files: ["**/*.{ts,tsx}"],
+        ignores: ["**/*.config.ts"],
         languageOptions: {
             parserOptions: {
                 projectService: {
-                    allowDefaultProject: ['eslint.config.js'],
+                    allowDefaultProject: ["eslint.config.js"],
                 },
                 tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
-            '@typescript-eslint/no-explicit-any': 'error',
-            '@typescript-eslint/no-floating-promises': 'error',
+            "@typescript-eslint/no-explicit-any": "error",
+            "@typescript-eslint/no-floating-promises": "error",
         },
     },
     {
-        ignores: [
-            'dist/**',
-            'node_modules/**',
-            'src-tauri/**'
-        ],
-    }
+        ignores: ["**/dist/**", "**/node_modules/**", "**/src-tauri/**"],
+    },
 );
