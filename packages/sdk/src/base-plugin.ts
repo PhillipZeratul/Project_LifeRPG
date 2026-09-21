@@ -7,6 +7,6 @@ export abstract class BasePlugin {
         this.context = context;
     }
 
-    abstract onload(): Promise<void> | void;
-    abstract onunload(): Promise<void> | void;
+    abstract onLoad(): Promise<void> | void;
+    abstract onUnload(): Promise<void> | void;
 }

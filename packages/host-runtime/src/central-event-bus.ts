@@ -1,6 +1,6 @@
-import type { IEventBus, EventCallback } from "./types";
+import type { IEventBus, EventCallback } from "@liferpg/sdk";
 
-export class BaseEventBus implements IEventBus {
+export class CentralEventBus implements IEventBus {
     protected listeners: Map<string, Set<EventCallback<never>>> = new Map();
 
     public on<T = unknown>(event: string, callback: EventCallback<T>): () => void {

@@ -16,7 +16,8 @@
 
     /* Path aliases */
     "paths": {
-      "@liferpg/sdk": ["./packages/sdk/src/index.ts"]
+      "@liferpg/sdk": ["./packages/sdk/src/index.ts"],
+      "@liferpg/plugins/core/*": ["./plugins/core/*/src/index.ts"]
     },
 
     /* Linting */
@@ -25,6 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "packages/sdk/src", "packages/host-runtime/src/"],
+  "include": ["src", "packages/**/src", "plugins/core/**/src/"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

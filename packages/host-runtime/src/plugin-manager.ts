@@ -1,10 +1,11 @@
-import { BaseEventBus, BasePlugin, IServiceRegistry, IPluginContext, IPluginManifest } from '@liferpg/sdk';
+import { BasePlugin, IServiceRegistry, IPluginContext, IPluginManifest } from '@liferpg/sdk';
+import { CentralEventBus } from './central-event-bus';
 
 export class PluginManager {
     private plugins = new Map<string, BasePlugin>();
 
     constructor(
-        private eventBus: BaseEventBus,
+        private eventBus: CentralEventBus,
         private serviceRegistry: IServiceRegistry
     ) {}
 
@@ -24,7 +25,7 @@ export class PluginManager {
         };
 
         const instance = new PluginClass(context);
-        await instance.onload();
+        await instance.onLoad();
         this.plugins.set(manifest.id, instance);
         console.log(`[Host] Loaded plugin ${manifest.name} (v${manifest.version})`);
     }
@@ -32,7 +33,7 @@ export class PluginManager {
     async unLoadPlugin(id: string) {
         const instance = this.plugins.get(id);
         if (instance) {
-            await instance.onload();
+            await instance.onLoad();
             this.plugins.delete(id);
             console.log(`[Host] Unloaded plugin ${id}`);
         }
