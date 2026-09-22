@@ -13,7 +13,7 @@ export class PluginManager {
         if (manifest.dependencies) {
             for (const dep of manifest.dependencies) {
                 if (!this.serviceRegistry.has(dep)) {
-                    throw new Error(`Plugin ${manifest.id} depends on missing service: ${dep}`);
+                    throw new Error(`Plugin ${manifest.id} depends on missing service: ${dep.description}`);
                 }
             }
         }

@@ -1,4 +1,4 @@
-import FocusTimerPlugin, { FocusTimerService} from "@liferpg/plugin-core-timer";
+import FocusTimerPlugin, { FocusTimerServiceToken, TimerEvents } from "@liferpg/plugin-core-timer";
 import { CentralEventBus } from "./central-event-bus";
 import { CentralServiceRegistry } from "./central-service-registry";
 import { PluginManager } from "./plugin-manager";
@@ -8,8 +8,8 @@ const registry = new CentralServiceRegistry();
 const manager = new PluginManager(bus, registry);
 
 export async function bootstrap() {
-    bus.on("timer:finished", (event: { duration: number }) => {
-        console.log(`[Central] Timer finished! +${event.duration * 2} EXP rewarded.`);
+    bus.on(TimerEvents.Finished, (event) => {
+        console.log(`[Central] Timer finished! +${event.durationSeconds * 2} EXP rewarded.`);
     });
 
     await manager.loadPlugin(FocusTimerPlugin, {
@@ -20,8 +20,8 @@ export async function bootstrap() {
         description: "A test timer plugin",
     });
 
-    bus.emit('timer:cmd-start', { durationMinutes: 25});
+    bus.emit(TimerEvents.Start, { durationSeconds: 25 * 60 });
 
-    const timer = registry.get<FocusTimerService>('focus-timer-service');
-    console.log('[Central] Is timer active?', timer?.isTimerRunning());
+    const timer = registry.get(FocusTimerServiceToken);
+    console.log("[Central] Is timer active?", timer?.isTimerRunning());
 }

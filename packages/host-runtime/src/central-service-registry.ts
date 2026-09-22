@@ -1,24 +1,24 @@
-import type { IServiceRegistry } from "@liferpg/sdk";
+import type { IServiceRegistry, IServiceToken } from "@liferpg/sdk";
 
 export class CentralServiceRegistry implements IServiceRegistry {
-    private services = new Map<string, unknown>();
+    private services = new Map<IServiceToken<unknown>, unknown>();
 
-    register<T>(id: string, implementation: T): void {
-        if (this.services.has(id)) {
-            console.warn(`[CentralServiceRegistry] Overwriting service [${id}]`);
+    register<T>(token: IServiceToken<T>, implementation: T): void {
+        if (this.services.has(token)) {
+            console.warn(`[CentralServiceRegistry] Overwriting service [${String(token.id)}]`);
         }
-        this.services.set(id, implementation);
+        this.services.set(token, implementation);
     }
 
-    unregister(id: string): void {
-        this.services.delete(id);
+    unregister(token: IServiceToken<unknown>): void {
+        this.services.delete(token);
     }
 
-    get<T>(id: string): T | undefined {
-        return this.services.get(id) as T | undefined;
+    get<T>(token: IServiceToken<T>): T | undefined {
+        return this.services.get(token) as T | undefined;
     }
 
-    has(id: string): boolean {
-        return this.services.has(id);
+    has(token: IServiceToken<unknown>): boolean {
+        return this.services.has(token);
     }
 }

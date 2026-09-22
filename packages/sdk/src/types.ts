@@ -10,20 +10,46 @@ export interface IPluginManifest {
     version: string;
     author: string;
     description: string;
-    dependencies?: string[];
+    dependencies?: IServiceToken<unknown>[];
 }
 
 export interface IEventBus {
-    on<T = unknown>(event: string, callback: EventCallback<T>): () => void;
-    off<T = unknown>(event: string, callback: EventCallback<T>): void;
-    emit<T = unknown>(event: string, payload: T): void;
+    on<T>(event: IEventDefinition<T>, callback: EventCallback<T>): () => void;
+    off<T>(event: IEventDefinition<T>, callback: EventCallback<T>): void;
+    emit<T>(event: IEventDefinition<T>, payload: T): void;
 }
 
-export type EventCallback<T = unknown> = (payload: T) => Promise<void> | void;
+export type EventCallback<T> = (payload: T) => Promise<void> | void;
+
+export interface IEventDefinition<T> {
+    readonly id: symbol;
+    readonly name: string;
+    readonly _payloadType?: T;
+}
+
+export function defineEvent<T = void>(name: string): IEventDefinition<T> {
+    return {
+        id: Symbol(name),
+        name,
+    };
+}
 
 export interface IServiceRegistry {
-    register<T>(id: string, implementation: T): void;
-    unregister(id: string): void;
-    get<T>(id: string): T | undefined;
-    has(id: string): boolean;
+    register<T>(token: IServiceToken<T>, implementation: T): void;
+    unregister(token: IServiceToken<unknown>): void;
+    get<T>(token: IServiceToken<T>): T | undefined;
+    has(token: IServiceToken<unknown>): boolean;
+}
+
+export interface IServiceToken<T> {
+    readonly id: symbol;
+    readonly description: string;
+    readonly _serviceType? : T;
+}
+
+export function createServiceToken<T>(description: string): IServiceToken<T> {
+    return {
+        id: Symbol(description),
+        description,
+    };
 }

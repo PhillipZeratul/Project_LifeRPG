@@ -1,9 +1,9 @@
-import type { IEventBus, EventCallback } from "@liferpg/sdk";
+import type { IEventBus, EventCallback, IEventDefinition } from "@liferpg/sdk";
 
 export class CentralEventBus implements IEventBus {
-    protected listeners: Map<string, Set<EventCallback<never>>> = new Map();
+    protected listeners: Map<IEventDefinition<unknown>, Set<EventCallback<never>>> = new Map();
 
-    public on<T = unknown>(event: string, callback: EventCallback<T>): () => void {
+    public on<T>(event: IEventDefinition<T>, callback: EventCallback<T>): () => void {
         let handlers = this.listeners.get(event);
         if (!handlers) {
             handlers = new Set();
@@ -13,7 +13,7 @@ export class CentralEventBus implements IEventBus {
         return () => this.off(event, callback);
     }
 
-    public off<T = unknown>(event: string, callback: EventCallback<T>): void {
+    public off<T>(event: IEventDefinition<T>, callback: EventCallback<T>): void {
         const handlers = this.listeners.get(event);
         if (handlers) {
             handlers.delete(callback);
@@ -23,7 +23,7 @@ export class CentralEventBus implements IEventBus {
         }
     }
 
-    public emit<T = unknown>(event: string, payload: T): void {
+    public emit<T>(event: IEventDefinition<T>, payload: T): void {
         const handlers = this.listeners.get(event);
         if (handlers) {
             handlers.forEach((callback) => {
