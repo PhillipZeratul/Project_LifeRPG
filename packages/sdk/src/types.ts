@@ -1,3 +1,5 @@
+declare const __brand: unique symbol;
+
 export interface IPluginContext {
     manifest: IPluginManifest;
     events: IEventBus;
@@ -21,17 +23,12 @@ export interface IEventBus {
 
 export type EventCallback<T> = (payload: T) => Promise<void> | void;
 
-export interface IEventDefinition<T> {
-    readonly id: symbol;
-    readonly name: string;
-    readonly _payloadType?: T;
-}
+export type IEventDefinition<T> = string &{
+    readonly [__brand]: T;
+};
 
 export function defineEvent<T = void>(name: string): IEventDefinition<T> {
-    return {
-        id: Symbol(name),
-        name,
-    };
+    return name as IEventDefinition<T>;
 }
 
 export interface IServiceRegistry {
@@ -41,15 +38,10 @@ export interface IServiceRegistry {
     has(token: IServiceToken<unknown>): boolean;
 }
 
-export interface IServiceToken<T> {
-    readonly id: symbol;
-    readonly description: string;
-    readonly _serviceType? : T;
+export type IServiceToken<T> = string & {
+    readonly [__brand]: T;
 }
 
-export function createServiceToken<T>(description: string): IServiceToken<T> {
-    return {
-        id: Symbol(description),
-        description,
-    };
+export function createServiceToken<T>(id: string): IServiceToken<T> {
+    return id as IServiceToken<T>;
 }

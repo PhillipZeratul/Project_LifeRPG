@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "tauri build": "pnpm --filter project_liferpg tauri build",
-    "tauri dev": "pnpm --filter project_liferpg tauri dev",
+    "tauri": "pnpm --filter @liferpg/desktop tauri",
     "build": "pnpm -r run build",
     "typecheck": "tsc -b",
     "lint": "eslint ."

@@ -5,7 +5,7 @@ export class CentralServiceRegistry implements IServiceRegistry {
 
     register<T>(token: IServiceToken<T>, implementation: T): void {
         if (this.services.has(token)) {
-            console.warn(`[CentralServiceRegistry] Overwriting service [${String(token.id)}]`);
+            console.warn(`[CentralServiceRegistry] Overwriting service [${token}]`);
         }
         this.services.set(token, implementation);
     }
