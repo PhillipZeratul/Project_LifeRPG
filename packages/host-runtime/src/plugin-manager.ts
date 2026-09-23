@@ -1,19 +1,30 @@
-import { BasePlugin, IServiceRegistry, IPluginContext, IPluginManifest } from '@liferpg/sdk';
-import { CentralEventBus } from './central-event-bus';
+import { BasePlugin, IPluginContext, IPluginManifest } from "@liferpg/sdk";
+import { CentralEventBus } from "./central-event-bus";
 
 export class PluginManager {
     private plugins = new Map<string, BasePlugin>();
 
-    constructor(
-        private eventBus: CentralEventBus,
-        private serviceRegistry: IServiceRegistry
-    ) {}
+    constructor(private eventBus: CentralEventBus) {}
 
-    async loadPlugin(PluginClass: new (ctx: IPluginContext) => BasePlugin, manifest: IPluginManifest) {
+    async loadPlugin(packageName: string) {
+        if (this.plugins.has(packageName)) {
+            console.log(`[Host] Plugin ${packageName} already loaded`);
+            return;
+        }
+
+        const [manifestModule, coreModule] = await Promise.all([
+            import(`${packageName}/package.json`, { with: { type: "json" } }),
+            import(packageName),
+        ]);
+
+        const manifest = manifestModule.default as IPluginManifest;
+        const PluginClass = coreModule.default;
+
         if (manifest.dependencies) {
-            for (const dep of manifest.dependencies) {
-                if (!this.serviceRegistry.has(dep)) {
-                    throw new Error(`Plugin ${manifest.id} depends on missing service: ${dep}`);
+            for (const requiredPkg of Object.keys(manifest.dependencies)) {
+                if (!this.plugins.has(requiredPkg)) {
+                    console.warn(`Plugin ${manifest.name} requires ${requiredPkg} to be loaded, loading now.`);
+                    await this.loadPlugin(requiredPkg);
                 }
             }
         }
@@ -21,13 +32,11 @@ export class PluginManager {
         const context: IPluginContext = {
             manifest,
             events: this.eventBus,
-            services: this.serviceRegistry,
         };
 
         const instance = new PluginClass(context);
         await instance.onLoad();
-        this.plugins.set(manifest.id, instance);
-        console.log(`[Host] Loaded plugin ${manifest.name} (v${manifest.version})`);
+        this.plugins.set(manifest.name, instance);
     }
 
     async unLoadPlugin(id: string) {

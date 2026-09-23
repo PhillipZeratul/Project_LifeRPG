@@ -1,11 +1,9 @@
-import { BasePlugin, createServiceToken, defineEvent } from "@liferpg/sdk";
+import { BasePlugin, defineEvent } from "@liferpg/sdk";
 
 export interface FocusTimerService {
     getActiveSessionDuration(): number;
     isTimerRunning(): boolean;
 }
-
-export const FocusTimerServiceToken = createServiceToken<FocusTimerService>("FocusTimerService");
 
 export const TimerEvents = {
     Start: defineEvent<{ durationSeconds: number }>("timer:start"),
@@ -18,21 +16,20 @@ export default class FocusTimerPlugin extends BasePlugin {
     private currentDuration = 0;
 
     async onLoad() {
-        this.context.services.register<FocusTimerService>(FocusTimerServiceToken, {
-            getActiveSessionDuration: () => this.currentDuration,
-            isTimerRunning: () => this.timerActive,
-        });
+        console.log(`[Plugin] Initializing ${this.manifest.name} ${this.manifest.version}`);
 
         this.context.events.on(TimerEvents.Start, (payload) => {
             this.startSprint(payload.durationSeconds);
         });
     }
 
-    async onUnload() {
-        this.context.services.unregister(FocusTimerServiceToken);
-    }
+    async onUnload() {}
 
     public startSprint(durationSeconds: number) {
+        if (this.timerActive) {
+            console.log('Timer is already active');
+            return;
+        }
         console.log(`Starting sprint for ${durationSeconds} seconds`);
 
         this.timerActive = true;

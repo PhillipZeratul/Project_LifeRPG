@@ -1,18 +1,25 @@
+import { BasePlugin } from "./base-plugin";
+
 declare const __brand: unique symbol;
 
 export interface IPluginContext {
     manifest: IPluginManifest;
     events: IEventBus;
-    services: IServiceRegistry;
 }
 
 export interface IPluginManifest {
-    id: string;
     name: string;
     version: string;
+    displayName: string;
     author: string;
     description: string;
-    dependencies?: IServiceToken<unknown>[];
+    dependencies?: Record<string, string>;
+    permissions?: string[];
+}
+
+export interface IPluginConstructor<T extends BasePlugin = BasePlugin> {
+    new (context: IPluginContext): T;
+    readonly manifest: IPluginManifest;
 }
 
 export interface IEventBus {
@@ -29,19 +36,4 @@ export type IEventDefinition<T> = string &{
 
 export function defineEvent<T = void>(name: string): IEventDefinition<T> {
     return name as IEventDefinition<T>;
-}
-
-export interface IServiceRegistry {
-    register<T>(token: IServiceToken<T>, implementation: T): void;
-    unregister(token: IServiceToken<unknown>): void;
-    get<T>(token: IServiceToken<T>): T | undefined;
-    has(token: IServiceToken<unknown>): boolean;
-}
-
-export type IServiceToken<T> = string & {
-    readonly [__brand]: T;
-}
-
-export function createServiceToken<T>(id: string): IServiceToken<T> {
-    return id as IServiceToken<T>;
 }
