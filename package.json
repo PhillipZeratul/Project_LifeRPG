@@ -1,18 +1,19 @@
 {
-  "name": "project_liferpg",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "tauri": "pnpm --filter @liferpg/desktop tauri",
-    "build": "pnpm -r run build",
-    "typecheck": "tsc -b",
-    "lint": "eslint ."
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.2",
-    "eslint": "^10.10.0",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.70.0"
-  }
+    "name": "project_liferpg",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "pnpm --filter @liferpg/desktop dev --open",
+        "tauri": "pnpm --filter @liferpg/desktop tauri",
+        "build": "pnpm -r run build",
+        "typecheck": "tsc -b",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^26.6.2",
+        "eslint": "^10.10.0",
+        "typescript": "^5.8.2",
+        "typescript-eslint": "^8.70.0"
+    }
 }
