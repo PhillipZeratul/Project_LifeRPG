@@ -1,4 +1,4 @@
-import { BasePlugin, IPluginContext, IPluginManifest } from "@liferpg/sdk";
+import { BasePlugin, type IPluginContext, type IPluginManifest } from "@liferpg/sdk";
 import { CentralEventBus } from "./central-event-bus";
 
 export class PluginManager {
