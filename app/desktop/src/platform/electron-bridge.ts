@@ -2,19 +2,15 @@ import type { IPlatformBridge } from "@liferpg/sdk";
 
 export class ElectronPlatformBridge implements IPlatformBridge {
     async openView(viewName: string): Promise<void> {
-        //await window.electron.invoke("open_view", { viewName });
+        await window.electron.openView(viewName);
     }
 
     emit(event: string, payload?: unknown): void {
-        //window.electron.emit(event, payload);
+        window.electron.emit(event, payload);
     }
 
     listen<T>(event: string, callback: (payload: T) => void): () => void {
-        //const unlisten = window.electron.listen(event, (payload: T) => {
-        //    callback(payload);
-        //});
-        //return unlisten;
-        return () => {};
+        return window.electron.listen<T>(event, callback);
     }
 }
 

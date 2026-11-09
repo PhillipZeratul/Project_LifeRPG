@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { emit } from "@tauri-apps/api/event";
+import { platform } from "../../../platform/electron-bridge";
 
 export default function RoutineTimeTrackerWindow() {
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
@@ -16,7 +16,7 @@ export default function RoutineTimeTrackerWindow() {
   const finishSession = async () => {
     setIsRunning(false);
     setSecondsLeft(25 * 60);
-    await emit("activity_completed", {
+    platform.emit("activity_completed", {
       type: "FOCUS",
       durationMinutes: 25,
       xpEarned: 50,

@@ -22,6 +22,6 @@ export default defineConfig(
         },
     },
     {
-        ignores: ["**/dist/**", "**/node_modules/**", "**/src-tauri/**"],
+        ignores: ["**/dist/**", "**/dist-electron/**", "**/node_modules/**", "**/src-tauri/**"],
     },
 );
