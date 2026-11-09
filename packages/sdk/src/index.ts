@@ -1,2 +1,3 @@
-export * from './types';
-export * from './base-plugin';
+export * from "./types";
+export * from "./base-plugin";
+export type { IPlatformBridge } from "./platform-bridge";

@@ -12,6 +12,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
     "moduleDetection": "force",
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
