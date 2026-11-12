@@ -4,15 +4,15 @@ import App from "./App";
 import { bootstrap } from "@liferpg/host-runtime";
 
 async function init() {
-    await bootstrap();
-
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
             <App />
         </React.StrictMode>,
     );
+
+    bootstrap().catch((err) => {
+        console.error("Failed to bootstrap:", err);
+    });
 }
 
-init().catch((err) => {
-    console.error("Failed to bootstrap:", err);
-});
+void init();

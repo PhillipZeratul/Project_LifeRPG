@@ -1,50 +1,106 @@
-import { BasePlugin, type IPluginContext, type IPluginManifest } from "@liferpg/sdk";
+import { BasePlugin, type IPluginManifest } from "@liferpg/sdk";
 import { CentralEventBus } from "./central-event-bus";
+import { BUILTIN_PLUGINS, type PluginDefinition } from "./builtin-plugins";
+import { ScopedPluginContext } from "./scoped-plugin-context";
+
+export interface PluginRecord {
+    id: string;
+    manifest: IPluginManifest;
+    definition: PluginDefinition;
+    instance: BasePlugin | null;
+    scopedContext: ScopedPluginContext | null;
+    isEnabled: boolean;
+}
 
 export class PluginManager {
-    private plugins = new Map<string, BasePlugin>();
+    private registry = new Map<string, PluginRecord>();
 
-    constructor(private eventBus: CentralEventBus) {}
+    constructor(private eventBus: CentralEventBus) {
+        for (const [id, def] of Object.entries(BUILTIN_PLUGINS)) {
+            this.registerPlugin(id, def);
+        }
+    }
 
-    async loadPlugin(packageName: string) {
-        if (this.plugins.has(packageName)) {
-            console.log(`[Host] Plugin ${packageName} already loaded`);
+    public registerPlugin(id: string, definition: PluginDefinition) {
+        if (!this.registry.has(id)) {
+            this.registry.set(id, {
+                id,
+                manifest: definition.manifest,
+                definition,
+                instance: null,
+                scopedContext: null,
+                isEnabled: false,
+            });
+        }
+    }
+
+    public async enablePlugin(id: string): Promise<void> {
+        const record = this.registry.get(id);
+        if (!record) {
+            throw new Error(`Plugin with id ${id} is not registered.`);
+        }
+        if (record.isEnabled) {
+            console.log(`Plugin ${id} is already enabled.`);
             return;
         }
 
-        const [manifestModule, coreModule] = await Promise.all([
-            import(`${packageName}/package.json`, { with: { type: "json" } }),
-            import(packageName),
-        ]);
+        console.log(`[Host] Enabling plugin: ${record.manifest.displayName || id}`);
 
-        const manifest = manifestModule.default as IPluginManifest;
-        const PluginClass = coreModule.default;
+        // Lazy load
+        const module = await record.definition.loader();
+        const PluginClass = module.default;
 
-        if (manifest.dependencies) {
-            for (const requiredPkg of Object.keys(manifest.dependencies)) {
-                if (!this.plugins.has(requiredPkg)) {
-                    console.warn(`Plugin ${manifest.name} requires ${requiredPkg} to be loaded, loading now.`);
-                    await this.loadPlugin(requiredPkg);
-                }
-            }
-        }
+        const scopedContext = new ScopedPluginContext(record.manifest, this.eventBus);
+        const instance = new PluginClass(scopedContext);
 
-        const context: IPluginContext = {
-            manifest,
-            events: this.eventBus,
-        };
-
-        const instance = new PluginClass(context);
         await instance.onLoad();
-        this.plugins.set(manifest.name, instance);
+
+        record.instance = instance;
+        record.scopedContext = scopedContext;
+        record.isEnabled = true;
     }
 
-    async unLoadPlugin(id: string) {
-        const instance = this.plugins.get(id);
-        if (instance) {
-            await instance.onUnload();
-            this.plugins.delete(id);
-            console.log(`[Host] Unloaded plugin ${id}`);
+    public async disablePlugin(id: string): Promise<void> {
+        const record = this.registry.get(id);
+        if (!record || !record.isEnabled) {
+            return;
         }
+
+        console.log(`[Host] Disabling plugin: ${record.manifest.displayName || id}`);
+
+        if (record.instance) {
+            await record.instance.onUnload();
+        }
+
+        if (record.scopedContext) {
+            record.scopedContext.dispose();
+        }
+
+        record.instance = null;
+        record.scopedContext = null;
+        record.isEnabled = false;
+    }
+
+    public async togglePlugin(id: string): Promise<boolean> {
+        const record = this.registry.get(id);
+        if (!record) {
+            throw new Error(`Plugin with id ${id} is not registered.`);
+        }
+
+        if (record.isEnabled) {
+            await this.disablePlugin(id);
+            return false;
+        } else {
+            await this.enablePlugin(id);
+            return true;
+        }
+    }
+
+    public getPlugins(): Array<{ id: string; manifest: IPluginManifest; isEnabled: boolean }> {
+        return Array.from(this.registry.values()).map((r) => ({
+            id: r.id,
+            manifest: r.manifest,
+            isEnabled: r.isEnabled,
+        }));
     }
 }

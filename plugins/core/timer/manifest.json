@@ -1,0 +1,9 @@
+{
+    "name": "@liferpg/plugin-core-timer",
+    "version": "0.1.0",
+    "displayName": "Focus Timer",
+    "author": "Phillix",
+    "description": "A focus sprint and timer plugin for LifeRPG",
+    "dependencies": {},
+    "permissions": []
+}

@@ -54,6 +54,7 @@ function openOrFocusView(viewName: string): BrowserWindow {
     const route = `/${viewName}`;
     if (process.env.VITE_DEV_SERVER_URL) {
         void win.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${route}`);
+        win.webContents.openDevTools();
     } else {
         void win.loadFile(path.join(RENDERER_DIST, "index.html"), { hash: route });
     }

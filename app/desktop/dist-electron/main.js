@@ -39,8 +39,10 @@ function openOrFocusView(viewName) {
 		windows.delete(viewName);
 	});
 	const route = `/${viewName}`;
-	if (process.env.VITE_DEV_SERVER_URL) win.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${route}`);
-	else win.loadFile(path.join(RENDERER_DIST, "index.html"), { hash: route });
+	if (process.env.VITE_DEV_SERVER_URL) {
+		win.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${route}`);
+		win.webContents.openDevTools();
+	} else win.loadFile(path.join(RENDERER_DIST, "index.html"), { hash: route });
 	return win;
 }
 if (!app.requestSingleInstanceLock()) app.quit();
