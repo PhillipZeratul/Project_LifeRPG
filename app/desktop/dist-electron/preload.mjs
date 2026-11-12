@@ -1,1 +1,0 @@
-let e=require("electron");e.contextBridge.exposeInMainWorld(`electron`,{openView:t=>e.ipcRenderer.invoke(`open_view`,{viewName:t}),emit:(t,n)=>e.ipcRenderer.send(`app:emit`,{event:t,payload:n}),listen:(t,n)=>{let r=`event:${t}`,i=(e,t)=>n(t);return e.ipcRenderer.on(r,i),()=>e.ipcRenderer.removeListener(r,i)}});

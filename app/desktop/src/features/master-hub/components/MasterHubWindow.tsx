@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { platform } from "../../../platform/electron-bridge";
+import { platform } from "../../../platform/index";
 
 interface ActivityPayload {
     type: string;

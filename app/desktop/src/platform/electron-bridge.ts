@@ -13,5 +13,3 @@ export class ElectronPlatformBridge implements IPlatformBridge {
         return window.electron.listen<T>(event, callback);
     }
 }
-
-export const platform: IPlatformBridge = new ElectronPlatformBridge();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { platform } from "../../../platform/electron-bridge";
+import { platform } from "../../../platform/index";
 
 export default function RoutineTimeTrackerWindow() {
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
