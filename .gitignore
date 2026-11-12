@@ -14,11 +14,6 @@ node_modules/
 dist/
 dist-ssr/
 
-# Tauri & Rust
-src-tauri/target/
-src-tauri/gen/schemas/
-*.rs.bk
-
 # Vite & TypeScript
 .vite/
 *.tsbuildinfo

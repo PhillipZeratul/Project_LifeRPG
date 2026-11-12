@@ -1,67 +1,48 @@
-import { BrowserWindow, app, ipcMain } from "electron";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { BrowserWindow as e, app as t, ipcMain as n } from "electron";
+import r from "node:path";
+import { fileURLToPath as i } from "node:url";
 //#region electron/main.ts
-var __dirname = path.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path.join(__dirname, "..");
-var MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
-var RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-var windows = /* @__PURE__ */ new Map();
-function parseTargetView(args) {
-	for (let i = 0; i < args.length; i++) if (args[i] === "--view" && args[i + 1]) return args[i + 1];
+var a = r.dirname(i(import.meta.url));
+process.env.APP_ROOT = r.join(a, "..");
+var o = r.join(process.env.APP_ROOT, "dist-electron"), s = r.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL ? r.join(process.env.APP_ROOT, "public") : s;
+var c = /* @__PURE__ */ new Map();
+function l(e) {
+	for (let t = 0; t < e.length; t++) if (e[t] === "--view" && e[t + 1]) return e[t + 1];
 	return "master-hub";
 }
-function openOrFocusView(viewName) {
-	const existing = windows.get(viewName);
-	if (existing && !existing.isDestroyed()) {
-		if (existing.isMinimized()) existing.restore();
-		existing.show();
-		existing.focus();
-		return existing;
-	}
-	const isTracker = viewName === "routine-time-tracker";
-	const win = new BrowserWindow({
-		title: isTracker ? "Routine Time Tracker" : "LifeRPG Hub",
-		width: isTracker ? 400 : 800,
+function u(t) {
+	let n = c.get(t);
+	if (n && !n.isDestroyed()) return n.isMinimized() && n.restore(), n.show(), n.focus(), n;
+	let i = t === "routine-time-tracker", o = new e({
+		title: i ? "Routine Time Tracker" : "LifeRPG Hub",
+		width: i ? 400 : 800,
 		height: 600,
-		alwaysOnTop: isTracker,
-		resizable: !isTracker,
-		autoHideMenuBar: true,
+		alwaysOnTop: i,
+		resizable: !i,
+		autoHideMenuBar: !0,
 		webPreferences: {
-			preload: path.join(__dirname, "preload.mjs"),
-			contextIsolation: true,
-			nodeIntegration: false
+			preload: r.join(a, "preload.mjs"),
+			contextIsolation: !0,
+			nodeIntegration: !1
 		}
 	});
-	windows.set(viewName, win);
-	win.on("closed", () => {
-		windows.delete(viewName);
+	c.set(t, o), o.on("closed", () => {
+		c.delete(t);
 	});
-	const route = `/${viewName}`;
-	if (process.env.VITE_DEV_SERVER_URL) {
-		win.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${route}`);
-		win.webContents.openDevTools();
-	} else win.loadFile(path.join(RENDERER_DIST, "index.html"), { hash: route });
-	return win;
+	let l = `/${t}`;
+	return process.env.VITE_DEV_SERVER_URL ? (o.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${l}`), o.webContents.openDevTools()) : o.loadFile(r.join(s, "index.html"), { hash: l }), o;
 }
-if (!app.requestSingleInstanceLock()) app.quit();
-else {
-	app.on("second-instance", (_event, argv) => {
-		openOrFocusView(parseTargetView(argv));
-	});
-	app.whenReady().then(() => {
-		ipcMain.handle("open_view", (_event, { viewName }) => {
-			openOrFocusView(viewName);
-		});
-		ipcMain.on("app:emit", (_event, { event, payload }) => {
-			for (const win of windows.values()) if (!win.isDestroyed()) win.webContents.send(`event:${event}`, payload);
-		});
-		openOrFocusView(parseTargetView(process.argv));
-	});
-}
-app.on("window-all-closed", () => {
-	if (process.platform !== "darwin") app.quit();
+t.requestSingleInstanceLock() ? (t.on("second-instance", (e, t) => {
+	u(l(t));
+}), t.whenReady().then(() => {
+	n.handle("open_view", (e, { viewName: t }) => {
+		u(t);
+	}), n.on("app:emit", (e, { event: t, payload: n }) => {
+		for (let e of c.values()) e.isDestroyed() || e.webContents.send(`event:${t}`, n);
+	}), u(l(process.argv));
+})) : t.quit(), t.on("window-all-closed", () => {
+	process.platform !== "darwin" && t.quit();
 });
 //#endregion
-export { MAIN_DIST, RENDERER_DIST };
+export { o as MAIN_DIST, s as RENDERER_DIST };

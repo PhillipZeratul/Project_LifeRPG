@@ -6,7 +6,8 @@ const bus = new CentralEventBus();
 const manager = new PluginManager(bus);
 
 export async function bootstrap() {
-    await manager.loadPlugin("@liferpg/plugin-core-timer");
+    // Temporary code.
+    await manager.enablePlugin("@liferpg/plugin-core-timer");
 
     bus.on(TimerEvents.Finished, (event) => {
         console.log(`[Central] Timer finished! +${event.durationSeconds * 2} EXP rewarded.`);
