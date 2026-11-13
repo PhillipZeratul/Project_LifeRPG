@@ -1,14 +1,7 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "composite": true,
-        "jsx": "react-jsx",
-        "outDir": "./dist"
-    },
-    "include": ["src"],
-    "references": [
-        { "path": "../../packages/sdk" },
-        { "path": "../../packages/ui" },
-        { "path": "../../packages/host-runtime" }
-    ]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

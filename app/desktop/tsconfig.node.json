@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "lib": ["ES2022"],
@@ -7,7 +7,7 @@
     "noEmit": true
   },
   "include": [
-    "app/desktop/vite.config.ts",
-    "app/desktop/electron/**/*.ts"
+    "vite.config.ts",
+    "electron/**/*.ts"
   ]
 }
