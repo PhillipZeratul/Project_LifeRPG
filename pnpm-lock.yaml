@@ -26,15 +26,79 @@ importers:
 
   app/desktop:
     dependencies:
-      '@capacitor/core':
-        specifier: ^8.6.0
-        version: 8.6.0
       '@liferpg/host-runtime':
         specifier: workspace:*
         version: link:../../packages/host-runtime
       '@liferpg/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
+      '@liferpg/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      lucide-react:
+        specifier: ^1.43.0
+        version: 1.43.0(react@19.3.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.3.0(react@19.3.0)
+      react-router-dom:
+        specifier: ^7.18.3
+        version: 7.18.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      zustand:
+        specifier: ^5.0.15
+        version: 5.0.15(@types/react@19.3.0)(react@19.3.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.10.0(jiti@2.7.0))
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@8.2.2(@types/node@26.6.2)(jiti@2.7.0))
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.1.6
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.2
+        version: 6.1.1(vite@8.2.2(@types/node@26.6.2)(jiti@2.7.0))
+      electron:
+        specifier: ^45.2.3
+        version: 45.2.3
+      eslint:
+        specifier: ^10.10.0
+        version: 10.10.0(jiti@2.7.0)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.70.0
+        version: 8.70.0(eslint@10.10.0(jiti@2.7.0))(typescript@6.0.3)
+      vite:
+        specifier: ^8.0.16
+        version: 8.2.2(@types/node@26.6.2)(jiti@2.7.0)
+      vite-plugin-electron:
+        specifier: ^1.2.0
+        version: 1.2.0(vite@8.2.2(@types/node@26.6.2)(jiti@2.7.0))
+
+  app/mobile:
+    dependencies:
+      '@capacitor/core':
+        specifier: ^8.6.0
+        version: 8.6.0
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+      '@liferpg/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       lucide-react:
         specifier: ^1.43.0
         version: 1.43.0(react@19.3.0)
@@ -75,9 +139,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^6.0.2
         version: 6.1.1(vite@8.2.2(@types/node@26.6.2)(jiti@2.7.0))
-      electron:
-        specifier: ^45.2.3
-        version: 45.2.3
       eslint:
         specifier: ^10.10.0
         version: 10.10.0(jiti@2.7.0)
@@ -107,6 +168,34 @@ importers:
         version: link:../sdk
 
   packages/sdk: {}
+
+  packages/ui:
+    dependencies:
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      lucide-react:
+        specifier: ^1.43.0
+        version: 1.43.0(react@19.3.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.3.0(react@19.3.0)
+      react-router-dom:
+        specifier: ^7.18.3
+        version: 7.18.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.8
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.1.6
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: ^5.8.2
+        version: 5.9.3
 
   plugins/core/timer:
     devDependencies:

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { platform } from "../../../platform/index";
+import { usePlatform } from "../../context/PlatformContext";
 
 interface ActivityPayload {
     type: string;
@@ -8,6 +8,7 @@ interface ActivityPayload {
 }
 
 export default function MasterHubWindow() {
+    const platform = usePlatform();
     const [, setXp] = useState(0);
 
     useEffect(() => {

@@ -7,16 +7,13 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
-        "mobile:sync": "vite build && cap sync",
-        "mobile:android": "vite build && cap run android",
-        "mobile:open": "cap open android",
         "preview": "vite preview",
         "lint": "eslint ."
     },
     "dependencies": {
-        "@capacitor/core": "^8.6.0",
         "@liferpg/host-runtime": "workspace:*",
         "@liferpg/sdk": "workspace:*",
+        "@liferpg/ui": "workspace:*",
         "lucide-react": "^1.43.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
@@ -24,9 +21,6 @@
         "zustand": "^5.0.15"
     },
     "devDependencies": {
-        "@capacitor/android": "^8.6.0",
-        "@capacitor/cli": "^8.6.0",
-        "@capacitor/ios": "^8.6.0",
         "@eslint/js": "^10.0.1",
         "@tailwindcss/vite": "^4.3.3",
         "@types/react": "^19.1.8",

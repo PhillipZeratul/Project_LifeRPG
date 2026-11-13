@@ -4,7 +4,9 @@
     { "path": "./tsconfig.node.json" },
     { "path": "./packages/sdk" },
     { "path": "./packages/host-runtime" },
+    { "path": "./packages/ui" },
     { "path": "./plugins/core/timer" },
-    { "path": "./app/desktop" }
+    { "path": "./app/desktop" },
+    { "path": "./app/mobile" }
   ]
 }

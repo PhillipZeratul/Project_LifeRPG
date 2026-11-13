@@ -1,0 +1,40 @@
+{
+    "name": "@liferpg/mobile",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "mobile:sync": "vite build && cap sync",
+        "mobile:android": "vite build && cap run android",
+        "mobile:open": "cap open android",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@capacitor/core": "^8.6.0",
+        "@liferpg/sdk": "workspace:*",
+        "@liferpg/ui": "workspace:*",
+        "lucide-react": "^1.43.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-router-dom": "^7.18.3",
+        "zustand": "^5.0.15"
+    },
+    "devDependencies": {
+        "@capacitor/android": "^8.6.0",
+        "@capacitor/cli": "^8.6.0",
+        "@capacitor/ios": "^8.6.0",
+        "@eslint/js": "^10.0.1",
+        "@tailwindcss/vite": "^4.3.3",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "@vitejs/plugin-react": "^6.0.2",
+        "eslint": "^10.10.0",
+        "tailwindcss": "^4.3.3",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.70.0",
+        "vite": "^8.0.16",
+        "vite-plugin-electron": "^1.2.0"
+    }
+}

@@ -1,18 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import { bootstrap } from "@liferpg/host-runtime";
+import { App, PlatformProvider } from "@liferpg/ui";
+import { ElectronPlatformBridge } from "./platform/electron-bridge";
+import "@liferpg/ui/styles.css";
 
-async function init() {
-    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-        <React.StrictMode>
+const bridge = new ElectronPlatformBridge();
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <React.StrictMode>
+        <PlatformProvider bridge={bridge}>
             <App />
-        </React.StrictMode>,
-    );
-
-    bootstrap().catch((err) => {
-        console.error("Failed to bootstrap:", err);
-    });
-}
-
-void init();
+        </PlatformProvider>
+    </React.StrictMode>,
+);
