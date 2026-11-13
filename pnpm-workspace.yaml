@@ -1,4 +1,7 @@
 packages:
-  - 'app/*'
-  - 'packages/*'
-  - 'plugins/**'
+    - "app/*"
+    - "packages/*"
+    - "plugins/**"
+
+catalog:
+    typescript: ^7.0.2
