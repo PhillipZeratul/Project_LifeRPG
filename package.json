@@ -6,7 +6,10 @@
         "dev": "pnpm --filter @liferpg/desktop dev --open",
         "build": "pnpm -r run build",
         "typecheck": "tsc -b",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "mobile:sync": "pnpm --filter @liferpg/desktop mobile:sync",
+        "mobile:android": "pnpm --filter @liferpg/desktop mobile:android",
+        "mobile:open": "pnpm --filter @liferpg/desktop mobile:open"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

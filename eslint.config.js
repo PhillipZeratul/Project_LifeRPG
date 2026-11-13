@@ -22,6 +22,6 @@ export default defineConfig(
         },
     },
     {
-        ignores: ["**/dist/**", "**/dist-electron/**", "**/node_modules/**"],
+        ignores: ["**/dist/**", "**/dist-electron/**", "**/node_modules/**", "**/android/**", "**/ios/**"],
     },
 );

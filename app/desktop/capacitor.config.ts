@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-    appId: "com.liferpg.desktop",
+    appId: "com.wutongonpaper.liferpg",
     appName: "LifeRPG",
     webDir: "dist",
     server: {
