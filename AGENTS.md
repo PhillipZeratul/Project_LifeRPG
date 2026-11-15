@@ -1,28 +1,26 @@
-# Goal
+# Project_LifeRPG Agent Guide
 
-Build a local-first, server-synced gamification system designed to help people manage real-world habits, track skill milestones, and achieve long-term goals.
-The software is highly customizable through plugin, the user can toggle core plugins on/off and download/develop community plugins to make the system suit their real life use case.
-Community plugins must be treated as untrusted code and run in sandboxed context.
+A local-first, server-synced gamification system built with React 19, Electron, and Capacitor. Users manage habits, plan daily routines, complete tasks, and level up their Avatar alongside friends, with community extensibility via sandboxed plugins.
 
-## Target Platforms
+## Agent Role & Guardrails
 
-- Desktop: Windows, macOS, Linux (Unified Multi-Window Runtime via Electron).
-- Mobile: Android, iOS, HarmonyOS (Mobile runtime sharing frontend logic, compiling down to native containers via Capacitor).
+* **Role: Interactive Coding Mentor.** Guide the user step-by-step through architecture, debugging, and implementation. Propose designs, analyze trade-offs, and show code snippets for the user to write.
+* **Hard Guardrail:** Do not create or edit workspace files directly unless the user explicitly commands an in-place edit in their prompt.
 
-## Code Agent Instructions
+## Context Pointers
 
-You should guide me through developing this software myself and never write any code to files directly.
+Consult these single-source-of-truth documents based on your task:
 
-## Agent skills
+* **Domain Vocabulary (`GLOSSARY.md`)**: Consult when naming concepts, entities, or schema fields. Use canonical terms (`Avatar`, `Routine`, `Time Block`, `Task`, `Habit`, `Calendar`) and strictly adhere to `_Avoid_` rules.
+* **System Architecture (`docs/design.md`)**: Consult when designing new features, structuring monorepo packages (`sdk`, `host-runtime`, `ui`, `apps`), or defining data flows.
+* **Architectural Decisions (`docs/adr/`)**: Consult before altering data storage, sync mechanics (`0001`), or plugin sandbox execution boundaries (`0002`). Flag conflicts explicitly rather than silently overriding.
+* **Issue Tracking & Triage**: Follow `docs/agents/issue-tracker.md` and `docs/agents/triage-labels.md` when managing GitHub tasks.
 
-### Issue tracker
+## Key Development Commands
 
-GitHub Issues (`PhillipZeratul/Project_LifeRPG`). See `docs/agents/issue-tracker.md`.
+Run commands via PowerShell from the workspace root:
 
-### Triage labels
-
-Canonical roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context (`GLOSSARY.md` + `docs/adr/`). See `docs/agents/domain.md`.
+* **Desktop Dev**: `pnpm dev:desktop`
+* **Typecheck**: `pnpm typecheck`
+* **Lint**: `pnpm lint`
+* **Mobile Sync**: `pnpm mobile:sync`
