@@ -5,7 +5,7 @@
     { "path": "./packages/host-runtime" },
     { "path": "./packages/ui" },
     { "path": "./plugins/core/timer" },
-    { "path": "./app/desktop" },
-    { "path": "./app/mobile" }
+    { "path": "./apps/desktop" },
+    { "path": "./apps/mobile" }
   ]
 }

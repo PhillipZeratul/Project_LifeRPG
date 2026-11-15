@@ -34,7 +34,7 @@ export default function MasterHubWindow() {
             {/* Left Sidebar */}
             <aside className="w-64 border-r border-neutral-800 p-6 flex flex-col justify-between">
                 <div>
-                    <h1 className="text-xl font-bold traching-wider text-amber-400">LIFERPG</h1>
+                    <h1 className="text-xl font-bold tracking-wider text-amber-400">LIFERPG</h1>
                     <p className="text-xs text-neutral-400 mt-1">Master Hub</p>
 
                     <div className="mt-8 space-y-3">
@@ -58,7 +58,7 @@ export default function MasterHubWindow() {
 
             {/* Main Diorama Center Area */}
             <main className="flex-1 flex flex-col items-center justify-center relative">
-                <div className="w-32 h-32 rounded-full border-4 border-amber400/50 flex items-center justify-center bg-neutral-800 shadow-xl shadow-amber-500/10 animate-pulse">
+                <div className="w-32 h-32 rounded-full border-4 border-amber-400/50 flex items-center justify-center bg-neutral-800 shadow-xl shadow-amber-500/10 animate-pulse">
                     <span className="text-4xl">🧙‍♂️</span>
                 </div>
                 <h2 className="mt-4 text-lg font-semibold">Avatar Presence</h2>

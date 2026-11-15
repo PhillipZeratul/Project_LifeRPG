@@ -1,4 +1,4 @@
-package com.liferpg.desktop;
+package com.wutongonpaper.liferpg;
 
 import com.getcapacitor.BridgeActivity;
 

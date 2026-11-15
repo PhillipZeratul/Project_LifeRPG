@@ -4,7 +4,6 @@
     "type": "module",
     "scripts": {
         "dev:desktop": "pnpm --filter @liferpg/desktop dev",
-        "dev:mobile": "pnpm --filter @liferpg/mobile dev",
         "build": "pnpm -r run build",
         "typecheck": "tsc -b",
         "lint": "eslint .",
