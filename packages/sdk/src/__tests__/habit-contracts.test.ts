@@ -4,6 +4,7 @@ import {
     validateUpdateHabitParams,
     validateTrackHabitParams,
     calculateHabitStreak,
+    calculateHabitHeatmap,
     HabitEvents,
     type HabitCompletion,
 } from "../contracts/habit";
@@ -168,6 +169,94 @@ describe("Habit Contracts & Schema Validation", () => {
             expect(streak.totalCompletions).toBe(3);
             expect(streak.currentStreak).toBe(2);
             expect(streak.longestStreak).toBe(2);
+        });
+    });
+
+    describe("calculateHabitHeatmap", () => {
+        it("aggregates multiple completions into daily heatmap entries with count and total XP", () => {
+            const completions: HabitCompletion[] = [
+                {
+                    id: "c1",
+                    habitId: "habit-1",
+                    avatarId: "avatar-1",
+                    completedAt: new Date("2026-11-15T08:00:00.000Z").getTime(),
+                    xpAwarded: 20,
+                },
+                {
+                    id: "c2",
+                    habitId: "habit-1",
+                    avatarId: "avatar-1",
+                    completedAt: new Date("2026-11-15T18:00:00.000Z").getTime(),
+                    xpAwarded: 20,
+                },
+                {
+                    id: "c3",
+                    habitId: "habit-1",
+                    avatarId: "avatar-1",
+                    completedAt: new Date("2026-11-16T09:00:00.000Z").getTime(),
+                    xpAwarded: 15,
+                },
+            ];
+
+            const heatmap = calculateHabitHeatmap(completions);
+            expect(heatmap).toEqual([
+                {
+                    date: "2026-11-15",
+                    count: 2,
+                    totalXp: 40,
+                    completionIds: ["c1", "c2"],
+                },
+                {
+                    date: "2026-11-16",
+                    count: 1,
+                    totalXp: 15,
+                    completionIds: ["c3"],
+                },
+            ]);
+        });
+
+        it("handles empty completions gracefully", () => {
+            const heatmap = calculateHabitHeatmap([]);
+            expect(heatmap).toEqual([]);
+        });
+
+        it("supports date range filtering and filling gaps with zero counts", () => {
+            const completions: HabitCompletion[] = [
+                {
+                    id: "c1",
+                    habitId: "habit-1",
+                    avatarId: "avatar-1",
+                    completedAt: new Date("2026-11-15T10:00:00.000Z").getTime(),
+                    xpAwarded: 10,
+                },
+            ];
+
+            const heatmap = calculateHabitHeatmap(completions, {
+                startDate: "2026-11-14",
+                endDate: "2026-11-16",
+                fillGaps: true,
+            });
+
+            expect(heatmap).toEqual([
+                {
+                    date: "2026-11-14",
+                    count: 0,
+                    totalXp: 0,
+                    completionIds: [],
+                },
+                {
+                    date: "2026-11-15",
+                    count: 1,
+                    totalXp: 10,
+                    completionIds: ["c1"],
+                },
+                {
+                    date: "2026-11-16",
+                    count: 0,
+                    totalXp: 0,
+                    completionIds: [],
+                },
+            ]);
         });
     });
 

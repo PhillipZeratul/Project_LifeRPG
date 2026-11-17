@@ -1,6 +1,6 @@
 import { BasePlugin, type IPluginManifest } from "@liferpg/sdk";
 import { CentralEventBus } from "./central-event-bus";
-import { BUILTIN_PLUGINS, type PluginDefinition } from "./builtin-plugins";
+import { CORE_PLUGINS, type PluginDefinition } from "./builtin-plugins";
 import { ScopedPluginContext } from "./scoped-plugin-context";
 import type { HostRpcBridge } from "./rpc-bridge";
 import type { CentralServiceRegistry } from "./central-service-registry";
@@ -22,7 +22,7 @@ export class PluginManager {
         private bridge?: HostRpcBridge,
         public readonly serviceRegistry?: CentralServiceRegistry
     ) {
-        for (const [id, def] of Object.entries(BUILTIN_PLUGINS)) {
+        for (const [id, def] of Object.entries(CORE_PLUGINS)) {
             this.registerPlugin(id, def);
         }
     }

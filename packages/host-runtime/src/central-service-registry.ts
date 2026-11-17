@@ -1,6 +1,6 @@
 import type { CentralEventBus } from "./central-event-bus";
 import { PluginManager } from "./plugin-manager";
-import { BUILTIN_PLUGINS, type PluginDefinition } from "./builtin-plugins";
+import { CORE_PLUGINS, type PluginDefinition } from "./builtin-plugins";
 import type { HostRpcBridge, IServiceRegistryQuery } from "./rpc-bridge";
 
 export interface ServiceRegistration {
@@ -35,11 +35,11 @@ export class CentralServiceRegistry implements IServiceRegistryQuery {
 
         this.bridge.setServiceRegistry(this);
         this.registerSystemHandlers();
-        this.initBuiltinServices();
+        this.initCoreServices();
     }
 
-    private initBuiltinServices(): void {
-        for (const [id, def] of Object.entries(BUILTIN_PLUGINS)) {
+    private initCoreServices(): void {
+        for (const [id, def] of Object.entries(CORE_PLUGINS)) {
             const shortId = def.service?.id ?? id.replace(/^@liferpg\/plugin-core-/, "");
             const methods = def.service?.methods ?? [`${shortId}.start`, `${shortId}.stop`, `${shortId}.status`];
             this.registerService({

@@ -267,15 +267,15 @@ describe("Toggleable Core Plugin Lifecycle & Graceful Degradation Seam", () => {
     await expect(client.call("calendar.sync")).rejects.toBeInstanceOf(FeatureDisabledError);
   });
 
-  it("handles the actual builtin @liferpg/plugin-core-timer lifecycle out of the box", async () => {
-    // Builtin timer plugin is registered on startup in disabled state
+  it("handles the actual core @liferpg/plugin-core-timer lifecycle out of the box", async () => {
+    // Core timer plugin is registered on startup in disabled state
     expect(await client.isAvailable("timer")).toBe(false);
     expect(await client.isAvailable("timer.start")).toBe(false);
     await expect(client.call("timer.start", { durationSeconds: 60 })).rejects.toBeInstanceOf(
       FeatureDisabledError
     );
 
-    // Enable builtin plugin
+    // Enable core plugin
     await serviceRegistry.enablePlugin("@liferpg/plugin-core-timer");
     expect(await client.isAvailable("timer")).toBe(true);
 
@@ -295,7 +295,7 @@ describe("Toggleable Core Plugin Lifecycle & Graceful Degradation Seam", () => {
     const stopRes = await client.call<{ stopped: boolean }>("timer.stop");
     expect(stopRes.stopped).toBe(true);
 
-    // Disable builtin plugin
+    // Disable core plugin
     await serviceRegistry.disablePlugin("@liferpg/plugin-core-timer");
     expect(await client.isAvailable("timer")).toBe(false);
     await expect(client.call("timer.start")).rejects.toBeInstanceOf(FeatureDisabledError);

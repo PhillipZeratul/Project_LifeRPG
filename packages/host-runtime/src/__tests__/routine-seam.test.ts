@@ -148,7 +148,7 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
             const timeBlock = await client.call<TimeBlock>("routine.createTimeBlock", {
                 routineId: routine.id,
                 title: "Morning Meditation",
-                description: "Mindfulness session",
+                description: "Mindfulness focus block",
                 startTime: "07:00",
                 endTime: "07:30",
                 color: "#4ade80",

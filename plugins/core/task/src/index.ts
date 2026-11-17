@@ -86,13 +86,15 @@ export default class TaskPlugin extends BasePlugin {
                 "task.complete",
                 async (params) => {
                     const result = this.store.completeTask(params);
-                    this.context.events.emit(TaskEvents.Completed, {
-                        task: result.task,
-                        xpAwarded: result.xpAwarded,
-                        statId: result.task.statId,
-                        avatarId: result.avatarId,
-                        notes: params.notes,
-                    });
+                    if (result.xpAwarded > 0) {
+                        this.context.events.emit(TaskEvents.Completed, {
+                            task: result.task,
+                            xpAwarded: result.xpAwarded,
+                            statId: result.task.statId,
+                            avatarId: result.avatarId,
+                            notes: params.notes,
+                        });
+                    }
                     return result;
                 },
                 { requiredPermissions: ["tasks:write"], serviceId: "task" }

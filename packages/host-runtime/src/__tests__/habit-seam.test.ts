@@ -243,7 +243,7 @@ describe("Habit Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => 
 
     describe("Event Emission & Avatar Progression Engine Integration", () => {
         it("emits habit:completed event and triggers additive XP on Avatar progression engine", async () => {
-            const avatarId = "hero-avatar-7";
+            const avatarId = "avatar-test-7";
             const habit = await client.call<Habit>("habit.create", {
                 name: "Morning Coding",
                 statId: "focus",

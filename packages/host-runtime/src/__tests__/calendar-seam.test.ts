@@ -205,7 +205,7 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
                 date: "2026-11-17",
                 timeBlockId: block.id,
                 routineId: routine.id,
-                title: "Rescheduled Strategy Session",
+                title: "Rescheduled Strategy Block",
                 startTime: "10:00",
                 endTime: "11:30",
                 color: "#FF5733",
@@ -214,14 +214,14 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
             expect(override.id).toBeDefined();
             expect(override.date).toBe("2026-11-17");
             expect(override.timeBlockId).toBe(block.id);
-            expect(override.title).toBe("Rescheduled Strategy Session");
+            expect(override.title).toBe("Rescheduled Strategy Block");
 
             // Check 2026-11-17 timeline
             const overriddenDay = await client.call<CalendarDayTimeline>("calendar.getDayTimeline", {
                 date: "2026-11-17",
             });
             expect(overriddenDay.blocks).toHaveLength(1);
-            expect(overriddenDay.blocks[0]!.title).toBe("Rescheduled Strategy Session");
+            expect(overriddenDay.blocks[0]!.title).toBe("Rescheduled Strategy Block");
             expect(overriddenDay.blocks[0]!.startTime).toBe("10:00");
             expect(overriddenDay.blocks[0]!.endTime).toBe("11:30");
             expect(overriddenDay.blocks[0]!.isOverride).toBe(true);

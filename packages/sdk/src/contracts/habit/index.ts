@@ -4,6 +4,8 @@ import type {
     HabitCompletion,
     HabitCompletionEvent,
     HabitStreak,
+    HabitHeatmapEntry,
+    HabitHeatmapOptions,
 } from "./types";
 
 export * from "./types";
@@ -101,3 +103,65 @@ export function calculateHabitStreak(
         lastCompletedAt,
     };
 }
+
+function formatUtcDate(timestamp: number): string {
+    const d = new Date(timestamp);
+    const year = d.getUTCFullYear();
+    const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Aggregates an append-only log of HabitCompletions into daily heatmap entries.
+ * Returns sorted entries by date ascending with counts, total XP awarded, and completion IDs.
+ */
+export function calculateHabitHeatmap(
+    completions: HabitCompletion[],
+    options?: HabitHeatmapOptions
+): HabitHeatmapEntry[] {
+    const map = new Map<string, HabitHeatmapEntry>();
+
+    for (const c of completions || []) {
+        const date = formatUtcDate(c.completedAt);
+        if (options?.startDate && date < options.startDate) {
+            continue;
+        }
+        if (options?.endDate && date > options.endDate) {
+            continue;
+        }
+
+        const existing = map.get(date);
+        if (existing) {
+            existing.count += 1;
+            existing.totalXp += c.xpAwarded ?? 0;
+            existing.completionIds.push(c.id);
+        } else {
+            map.set(date, {
+                date,
+                count: 1,
+                totalXp: c.xpAwarded ?? 0,
+                completionIds: [c.id],
+            });
+        }
+    }
+
+    if (options?.fillGaps && options.startDate && options.endDate) {
+        const start = new Date(`${options.startDate}T00:00:00.000Z`).getTime();
+        const end = new Date(`${options.endDate}T00:00:00.000Z`).getTime();
+        for (let t = start; t <= end; t += ONE_DAY_MS) {
+            const dateStr = formatUtcDate(t);
+            if (!map.has(dateStr)) {
+                map.set(dateStr, {
+                    date: dateStr,
+                    count: 0,
+                    totalXp: 0,
+                    completionIds: [],
+                });
+            }
+        }
+    }
+
+    return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+}
+

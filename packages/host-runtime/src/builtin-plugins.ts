@@ -14,7 +14,7 @@ export interface PluginDefinition {
     };
 }
 
-export const BUILTIN_PLUGINS: Record<string, PluginDefinition> = {
+export const CORE_PLUGINS: Record<string, PluginDefinition> = {
     "@liferpg/plugin-core-timer": {
         manifest: timerManifest as unknown as IPluginManifest,
         loader: () => import("@liferpg/plugin-core-timer"),
@@ -89,3 +89,5 @@ export const BUILTIN_PLUGINS: Record<string, PluginDefinition> = {
         },
     },
 };
+
+export const BUILTIN_PLUGINS = CORE_PLUGINS;

@@ -4,7 +4,7 @@ export interface Habit {
     description?: string;
     timeBlockId?: string; // Anchored to a Time Block, or undefined for standalone habit
     statId?: string;      // Associated Avatar Stat (e.g. "focus", "vitality", "intellect")
-    xpReward?: number;    // Additive Experience points awarded upon fulfillment
+    xpReward?: number;    // Additive Experience (XP) awarded upon fulfillment
     frequency?: "daily" | "weekly" | "custom";
     daysOfWeek?: number[]; // [0..6]
     targetPerDay?: number; // e.g. 1
@@ -116,6 +116,19 @@ export interface HabitDeleteResult {
     success: boolean;
     id: string;
     deleted_at: number;
+}
+
+export interface HabitHeatmapEntry {
+    date: string; // "YYYY-MM-DD"
+    count: number;
+    totalXp: number;
+    completionIds: string[];
+}
+
+export interface HabitHeatmapOptions {
+    startDate?: string; // "YYYY-MM-DD"
+    endDate?: string;   // "YYYY-MM-DD"
+    fillGaps?: boolean;
 }
 
 export interface HabitServiceContract {

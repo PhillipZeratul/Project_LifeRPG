@@ -13,14 +13,8 @@ import {
     validateScheduleTaskParams,
     validateCompleteTaskParams,
     shouldApplyLwwUpdate,
+    generateId,
 } from "@liferpg/sdk";
-
-function generateId(prefix: string): string {
-    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-        return `${prefix}_${crypto.randomUUID()}`;
-    }
-    return `${prefix}_${Math.random().toString(36).substring(2, 11)}_${Date.now()}`;
-}
 
 export class TaskStoreError extends Error {
     public code: string;
@@ -257,11 +251,21 @@ export class LocalTaskStore {
         const incomingUpdatedAt = params.updated_at ?? now;
         const completedAt = params.completedAt ?? now;
 
-        if (shouldApplyLwwUpdate(existing.updated_at, incomingUpdatedAt)) {
-            existing.completed = true;
-            existing.completedAt = completedAt;
-            existing.updated_at = incomingUpdatedAt;
+        const isStale = !shouldApplyLwwUpdate(existing.updated_at, incomingUpdatedAt);
+        const alreadyCompleted = Boolean(existing.completed);
+
+        if (isStale || alreadyCompleted) {
+            return {
+                task: { ...existing },
+                xpAwarded: 0,
+                avatarId: params.avatarId || "default",
+                notes: params.notes,
+            };
         }
+
+        existing.completed = true;
+        existing.completedAt = completedAt;
+        existing.updated_at = incomingUpdatedAt;
 
         const xpAwarded = params.xpAwarded ?? existing.xpReward ?? 10;
         const avatarId = params.avatarId || "default";

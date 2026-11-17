@@ -14,9 +14,6 @@ export const RoutineEvents = {
 } as const;
 
 /**
- * Evaluates whether an incoming write should be applied under Row-Level Last-Write-Wins (LWW).
- * In ADR-0001, writes with an updated_at timestamp greater than or equal to existing updated_at win.
+ * Backward compatibility re-export. Canonical implementation moved to foundation/storage.
  */
-export function shouldApplyLwwUpdate(existingUpdatedAt: number, incomingUpdatedAt: number): boolean {
-    return incomingUpdatedAt >= existingUpdatedAt;
-}
+export { shouldApplyLwwUpdate } from "../../foundation/storage";

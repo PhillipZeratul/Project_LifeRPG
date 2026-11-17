@@ -1,5 +1,7 @@
-export type AvatarId = string;
-export type StatId = string;
+import { __brand } from "../../types";
+
+export type AvatarId = string & { readonly [__brand]?: "AvatarId" };
+export type StatId = string & { readonly [__brand]?: "StatId" };
 
 export interface Avatar {
   id: AvatarId;

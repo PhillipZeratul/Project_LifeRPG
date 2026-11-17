@@ -137,7 +137,7 @@ describe("Task Contracts & Validation Seam", () => {
         it("accepts valid complete params", () => {
             const result = validateCompleteTaskParams({
                 id: "task-1",
-                avatarId: "avatar-hero",
+                avatarId: "avatar-agent-1",
                 notes: "Finished early",
             });
             expect(result.valid).toBe(true);

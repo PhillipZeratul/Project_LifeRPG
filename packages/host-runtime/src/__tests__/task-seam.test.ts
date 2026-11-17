@@ -336,6 +336,74 @@ describe("Task Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => {
             expect(evt.statId).toBe("intellect");
             expect(evt.notes).toBe("Read utility types chapter");
         });
+
+        it("does not award duplicate XP or emit task:completed event when re-completing an already completed task", async () => {
+            const avatarId = "avatar-repeat-test";
+            const task = await client.call<Task>("task.create", {
+                title: "One-time Task",
+                xpReward: 50,
+            });
+
+            const receivedEvents: unknown[] = [];
+            eventBus.on(TaskEvents.Completed, (evt) => {
+                receivedEvents.push(evt);
+            });
+
+            // First completion
+            const firstComplete = await client.call<CompleteTaskResult>("task.complete", {
+                id: task.id,
+                avatarId,
+            });
+            expect(firstComplete.xpAwarded).toBe(50);
+            expect(firstComplete.task.completed).toBe(true);
+            expect(receivedEvents.length).toBe(1);
+
+            // Re-completion attempt
+            const secondComplete = await client.call<CompleteTaskResult>("task.complete", {
+                id: task.id,
+                avatarId,
+            });
+            expect(secondComplete.xpAwarded).toBe(0);
+            expect(receivedEvents.length).toBe(1); // No new event emitted
+
+            // Verify avatar XP was not awarded a second time
+            const avatarState = await client.call<AvatarGetResult>("avatar.get", { avatarId });
+            expect(avatarState.progression.totalXp).toBe(50);
+        });
+
+        it("does not complete task, award XP, or emit event on stale LWW completion update", async () => {
+            const avatarId = "avatar-stale-test";
+            const task = await client.call<Task>("task.create", {
+                title: "Future Task",
+                xpReward: 30,
+                created_at: 10000,
+                updated_at: 10000,
+            });
+
+            const receivedEvents: unknown[] = [];
+            eventBus.on(TaskEvents.Completed, (evt) => {
+                receivedEvents.push(evt);
+            });
+
+            // Attempt completion with older updated_at (stale)
+            const staleComplete = await client.call<CompleteTaskResult>("task.complete", {
+                id: task.id,
+                avatarId,
+                updated_at: 5000, // Stale write
+            });
+
+            expect(staleComplete.xpAwarded).toBe(0);
+            expect(staleComplete.task.completed).toBe(false);
+            expect(receivedEvents.length).toBe(0);
+
+            // Verify task in store remains uncompleted
+            const fetched = await client.call<Task>("task.get", { id: task.id });
+            expect(fetched.completed).toBe(false);
+
+            // Verify no XP on avatar
+            const avatarState = await client.call<AvatarGetResult>("avatar.get", { avatarId });
+            expect(avatarState.progression.totalXp).toBe(0);
+        });
     });
 
     describe("Permission Enforcement Seam", () => {
