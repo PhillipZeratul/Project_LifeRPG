@@ -1,6 +1,6 @@
 import type { CentralEventBus } from "./central-event-bus";
 import { PluginManager } from "./plugin-manager";
-import { CORE_PLUGINS, type PluginDefinition } from "./builtin-plugins";
+import { CORE_PLUGINS, type PluginDefinition } from "./core-plugins";
 import type { HostRpcBridge, IServiceRegistryQuery } from "./rpc-bridge";
 
 export interface ServiceRegistration {

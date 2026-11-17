@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev:desktop": "pnpm --filter @liferpg/desktop dev",
+        "dev": "pnpm --filter @liferpg/desktop dev",
         "build": "pnpm -r run build",
         "test": "vitest run",
         "typecheck": "tsc -b",

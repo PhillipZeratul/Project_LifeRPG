@@ -1,6 +1,6 @@
 import { BasePlugin, type IPluginManifest } from "@liferpg/sdk";
 import { CentralEventBus } from "./central-event-bus";
-import { CORE_PLUGINS, type PluginDefinition } from "./builtin-plugins";
+import { CORE_PLUGINS, type PluginDefinition } from "./core-plugins";
 import { ScopedPluginContext } from "./scoped-plugin-context";
 import type { HostRpcBridge } from "./rpc-bridge";
 import type { CentralServiceRegistry } from "./central-service-registry";

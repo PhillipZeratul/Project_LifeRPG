@@ -89,5 +89,3 @@ export const CORE_PLUGINS: Record<string, PluginDefinition> = {
         },
     },
 };
-
-export const BUILTIN_PLUGINS = CORE_PLUGINS;
