@@ -190,7 +190,7 @@ describe("Host Runtime RPC Seam", () => {
         xpGranted: number;
       }
 
-      const handlerSpy = vi.fn().mockImplementation((_params: TrackHabitParams): TrackHabitResult => {
+      const handlerSpy = vi.fn().mockImplementation((): TrackHabitResult => {
         return {
           streak: 5,
           xpGranted: 20,
