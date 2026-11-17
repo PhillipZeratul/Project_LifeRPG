@@ -166,6 +166,9 @@ importers:
 
   packages/host-runtime:
     dependencies:
+      '@liferpg/plugin-core-routine':
+        specifier: workspace:*
+        version: link:../../plugins/core/routine
       '@liferpg/plugin-core-timer':
         specifier: workspace:*
         version: link:../../plugins/core/timer
@@ -210,6 +213,12 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+
+  plugins/core/routine:
+    devDependencies:
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../../../packages/sdk
 
   plugins/core/timer:
     devDependencies:

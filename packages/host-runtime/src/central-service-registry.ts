@@ -40,12 +40,13 @@ export class CentralServiceRegistry implements IServiceRegistryQuery {
 
     private initBuiltinServices(): void {
         for (const [id, def] of Object.entries(BUILTIN_PLUGINS)) {
-            const shortId = id.replace(/^@liferpg\/plugin-core-/, "");
+            const shortId = def.service?.id ?? id.replace(/^@liferpg\/plugin-core-/, "");
+            const methods = def.service?.methods ?? [`${shortId}.start`, `${shortId}.stop`, `${shortId}.status`];
             this.registerService({
                 id: shortId,
                 name: def.manifest.displayName || shortId,
                 pluginId: id,
-                methods: [`${shortId}.start`, `${shortId}.stop`, `${shortId}.status`],
+                methods,
                 enabled: false,
             });
             this.pluginToServiceMap.set(id, shortId);

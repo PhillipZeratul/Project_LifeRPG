@@ -10,6 +10,7 @@ export * from "./central-service-registry";
 export { CentralEventBus } from "./central-event-bus";
 export { PluginManager } from "./plugin-manager";
 export { ScopedPluginContext } from "./scoped-plugin-context";
+export { LocalRoutineStore, RoutineStoreError, default as RoutinePlugin } from "@liferpg/plugin-core-routine";
 
 
 const bus = new CentralEventBus();

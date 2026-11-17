@@ -1,0 +1,9 @@
+{
+    "name": "@liferpg/plugin-core-routine",
+    "version": "0.1.0",
+    "displayName": "Routine Core Plugin",
+    "author": "Phillix",
+    "description": "Core routine and time block management plugin for LifeRPG",
+    "dependencies": {},
+    "permissions": ["routines:read", "routines:write"]
+}
