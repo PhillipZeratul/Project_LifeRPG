@@ -8,6 +8,11 @@ declare const __brand: unique symbol;
 export interface IPluginContext {
     manifest: IPluginManifest;
     events: IEventBus;
+    registerRpcHandler?<TParams = unknown, TResult = unknown>(
+        method: string,
+        handler: (params: TParams, context?: unknown) => Promise<TResult> | TResult,
+        options?: unknown
+    ): void;
 }
 
 export interface IPluginConstructor<T extends BasePlugin = BasePlugin> {

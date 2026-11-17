@@ -1,5 +1,5 @@
-import { RpcError, PermissionDeniedError } from "./errors";
-import type { IRpcTransport, RpcId, RpcMessage, RpcRequest } from "./types";
+import { RpcError, PermissionDeniedError, FeatureDisabledError } from "./errors";
+import type { IRpcTransport, RpcId, RpcMessage, RpcRequest, IFeatureAvailability } from "./types";
 
 export interface RpcClientOptions {
     timeoutMs?: number;
@@ -11,7 +11,7 @@ interface PendingRequest {
     timer: ReturnType<typeof setTimeout>;
 }
 
-export class RpcClient {
+export class RpcClient implements IFeatureAvailability {
     private transport: IRpcTransport;
     private defaultTimeoutMs: number;
     private nextId: number = 1;
@@ -51,6 +51,19 @@ export class RpcClient {
                         permission: data?.permission,
                         method: data?.method,
                         callerId: data?.callerId,
+                        data: message.error.data,
+                    })
+                );
+            } else if (message.error.code === "FEATURE_DISABLED") {
+                const data = message.error.data as
+                    | { feature?: string; pluginId?: string; method?: string }
+                    | undefined;
+                pending.reject(
+                    new FeatureDisabledError({
+                        message: message.error.message,
+                        feature: data?.feature,
+                        pluginId: data?.pluginId,
+                        method: data?.method,
                         data: message.error.data,
                     })
                 );
@@ -107,6 +120,22 @@ export class RpcClient {
                 reject(err instanceof Error ? err : new Error(String(err)));
             }
         });
+    }
+
+    public async isAvailable(feature: string): Promise<boolean> {
+        if (this.isDisposed) {
+            return false;
+        }
+
+        try {
+            const response = await this.call<{ available: boolean }, { feature: string }>(
+                "system.isFeatureAvailable",
+                { feature }
+            );
+            return Boolean(response?.available);
+        } catch {
+            return false;
+        }
     }
 
     public dispose(): void {

@@ -2,6 +2,8 @@ import { BasePlugin, type IPluginManifest } from "@liferpg/sdk";
 import { CentralEventBus } from "./central-event-bus";
 import { BUILTIN_PLUGINS, type PluginDefinition } from "./builtin-plugins";
 import { ScopedPluginContext } from "./scoped-plugin-context";
+import type { HostRpcBridge } from "./rpc-bridge";
+import type { CentralServiceRegistry } from "./central-service-registry";
 
 export interface PluginRecord {
     id: string;
@@ -15,14 +17,19 @@ export interface PluginRecord {
 export class PluginManager {
     private registry = new Map<string, PluginRecord>();
 
-    constructor(private eventBus: CentralEventBus) {
+    constructor(
+        private eventBus: CentralEventBus,
+        private bridge?: HostRpcBridge,
+        public readonly serviceRegistry?: CentralServiceRegistry
+    ) {
         for (const [id, def] of Object.entries(BUILTIN_PLUGINS)) {
             this.registerPlugin(id, def);
         }
     }
 
     public registerPlugin(id: string, definition: PluginDefinition) {
-        if (!this.registry.has(id)) {
+        const existing = this.registry.get(id);
+        if (!existing || !existing.isEnabled) {
             this.registry.set(id, {
                 id,
                 manifest: definition.manifest,
@@ -32,6 +39,14 @@ export class PluginManager {
                 isEnabled: false,
             });
         }
+    }
+
+    public hasPlugin(id: string): boolean {
+        return this.registry.has(id);
+    }
+
+    public isPluginEnabled(id: string): boolean {
+        return this.registry.get(id)?.isEnabled ?? false;
     }
 
     public async enablePlugin(id: string): Promise<void> {
@@ -50,7 +65,7 @@ export class PluginManager {
         const module = await record.definition.loader();
         const PluginClass = module.default;
 
-        const scopedContext = new ScopedPluginContext(record.manifest, this.eventBus);
+        const scopedContext = new ScopedPluginContext(record.manifest, this.eventBus, this.bridge);
         const instance = new PluginClass(scopedContext);
 
         await instance.onLoad();

@@ -35,3 +35,8 @@ export interface IRpcTransport {
     send(message: RpcMessage): void;
     onMessage(handler: (message: RpcMessage) => void): () => void;
 }
+
+export interface IFeatureAvailability {
+    isAvailable(feature: string): Promise<boolean>;
+}
+

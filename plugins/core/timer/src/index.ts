@@ -22,6 +22,26 @@ export default class FocusTimerPlugin extends BasePlugin {
         this.context.events.on(TimerEvents.Start, (payload) => {
             this.startTimer(payload.durationSeconds);
         });
+
+        if (this.context.registerRpcHandler) {
+            this.context.registerRpcHandler("timer.start", (params: { durationSeconds?: number } | undefined) => {
+                const duration = params?.durationSeconds ?? 25 * 60;
+                this.startTimer(duration);
+                return { started: true, durationSeconds: duration };
+            });
+
+            this.context.registerRpcHandler("timer.stop", () => {
+                this.stopTimer();
+                return { stopped: true };
+            });
+
+            this.context.registerRpcHandler("timer.status", () => {
+                return {
+                    active: this.timerActive,
+                    currentDuration: this.currentDuration,
+                };
+            });
+        }
     }
 
     async onUnload() {

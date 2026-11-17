@@ -3,6 +3,7 @@ import {
   RpcClient,
   RpcError,
   PermissionDeniedError,
+  FeatureDisabledError,
   createMessageChannelTransportPair,
   type RpcRequest,
 } from "../foundation/rpc";
@@ -103,5 +104,113 @@ describe("RpcClient & Transport", () => {
     } finally {
       client.dispose();
     }
+  });
+
+  it("deserializes typed FeatureDisabledError when invoking a disabled service", async () => {
+    const [transportA, transportB] = createMessageChannelTransportPair();
+    const client = new RpcClient(transportA);
+
+    transportB.onMessage((msg) => {
+      if (msg.type === "request") {
+        transportB.send({
+          type: "response",
+          id: msg.id,
+          success: false,
+          error: {
+            code: "FEATURE_DISABLED",
+            message: "Feature 'timer' is currently disabled or unavailable",
+            data: {
+              feature: "timer",
+              pluginId: "@liferpg/plugin-core-timer",
+              method: "timer.start",
+            },
+          },
+        });
+      }
+    });
+
+    try {
+      await client.call("timer.start");
+      expect.unreachable("Should have thrown FeatureDisabledError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(FeatureDisabledError);
+      expect(err).toBeInstanceOf(RpcError);
+      const disabledErr = err as FeatureDisabledError;
+      expect(disabledErr.code).toBe("FEATURE_DISABLED");
+      expect(disabledErr.feature).toBe("timer");
+      expect(disabledErr.pluginId).toBe("@liferpg/plugin-core-timer");
+      expect(disabledErr.message).toContain("disabled");
+    } finally {
+      client.dispose();
+    }
+  });
+
+  describe("isAvailable() check", () => {
+    it("returns true when host reports feature is available", async () => {
+      const [transportA, transportB] = createMessageChannelTransportPair();
+      const client = new RpcClient(transportA);
+
+      transportB.onMessage((msg) => {
+        if (msg.type === "request") {
+          const req = msg as RpcRequest<{ feature: string }>;
+          expect(req.method).toBe("system.isFeatureAvailable");
+          expect(req.params?.feature).toBe("timer");
+          transportB.send({
+            type: "response",
+            id: req.id,
+            success: true,
+            result: { available: true },
+          });
+        }
+      });
+
+      const isAvail = await client.isAvailable("timer");
+      expect(isAvail).toBe(true);
+      client.dispose();
+    });
+
+    it("returns false when host reports feature is disabled or not found", async () => {
+      const [transportA, transportB] = createMessageChannelTransportPair();
+      const client = new RpcClient(transportA);
+
+      transportB.onMessage((msg) => {
+        if (msg.type === "request") {
+          const req = msg as RpcRequest<{ feature: string }>;
+          transportB.send({
+            type: "response",
+            id: req.id,
+            success: true,
+            result: { available: false },
+          });
+        }
+      });
+
+      const isAvail = await client.isAvailable("disabled-plugin");
+      expect(isAvail).toBe(false);
+      client.dispose();
+    });
+
+    it("returns false gracefully if query fails or RPC method is not supported", async () => {
+      const [transportA, transportB] = createMessageChannelTransportPair();
+      const client = new RpcClient(transportA);
+
+      transportB.onMessage((msg) => {
+        if (msg.type === "request") {
+          transportB.send({
+            type: "response",
+            id: msg.id,
+            success: false,
+            error: {
+              code: "METHOD_NOT_FOUND",
+              message: "Method 'system.isFeatureAvailable' not found",
+            },
+          });
+        }
+      });
+
+      const isAvail = await client.isAvailable("unknown-feature");
+      expect(isAvail).toBe(false);
+      client.dispose();
+    });
   });
 });

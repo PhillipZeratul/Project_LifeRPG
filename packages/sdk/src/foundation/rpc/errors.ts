@@ -62,3 +62,51 @@ export class PermissionDeniedError extends RpcError {
         Object.setPrototypeOf(this, new.target.prototype);
     }
 }
+
+export interface FeatureDisabledErrorPayload {
+    message?: string;
+    feature?: string;
+    pluginId?: string;
+    method?: string;
+    data?: unknown;
+}
+
+export class FeatureDisabledError extends RpcError {
+    public readonly feature?: string;
+    public readonly pluginId?: string;
+    public readonly method?: string;
+
+    constructor(payload: FeatureDisabledErrorPayload | string) {
+        if (typeof payload === "string") {
+            super({
+                code: "FEATURE_DISABLED",
+                message: payload,
+            });
+            this.name = "FeatureDisabledError";
+        } else {
+            const featureName = payload.feature ?? payload.pluginId ?? payload.method ?? "requested feature";
+            const message =
+                payload.message ??
+                `Feature '${featureName}' is currently disabled or unavailable`;
+
+            super({
+                code: "FEATURE_DISABLED",
+                message,
+                data: {
+                    feature: payload.feature,
+                    pluginId: payload.pluginId,
+                    method: payload.method,
+                    ...(typeof payload.data === "object" && payload.data !== null
+                        ? (payload.data as Record<string, unknown>)
+                        : {}),
+                },
+            });
+            this.name = "FeatureDisabledError";
+            this.feature = payload.feature;
+            this.pluginId = payload.pluginId;
+            this.method = payload.method;
+        }
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+

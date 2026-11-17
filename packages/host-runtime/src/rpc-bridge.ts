@@ -24,6 +24,8 @@ export interface RpcHandlerContext {
 
 export interface RpcHandlerOptions {
     requiredPermissions?: PluginPermission[] | PluginPermission;
+    serviceId?: string;
+    pluginId?: string;
 }
 
 export type RpcHandler<TParams = unknown, TResult = unknown> = (
@@ -31,9 +33,18 @@ export type RpcHandler<TParams = unknown, TResult = unknown> = (
     context: RpcHandlerContext
 ) => Promise<TResult> | TResult;
 
+export interface IServiceRegistryQuery {
+    isMethodDisabled(method: string): boolean;
+    isServiceDisabled?(serviceId: string): boolean;
+    getServiceForMethod?(method: string): { id: string; pluginId?: string } | undefined;
+    isAvailable?(query: string): boolean;
+}
+
 interface HandlerRecord {
     handler: RpcHandler<never, unknown>;
     requiredPermissions: string[];
+    serviceId?: string;
+    pluginId?: string;
 }
 
 function matchesPermission(granted: string, required: string): boolean {
@@ -56,6 +67,11 @@ function hasPermission(callerPermissions: readonly string[], required: string): 
 
 export class HostRpcBridge {
     private handlers: Map<string, HandlerRecord> = new Map();
+    private serviceRegistry?: IServiceRegistryQuery;
+
+    public setServiceRegistry(registry: IServiceRegistryQuery): void {
+        this.serviceRegistry = registry;
+    }
 
     public registerHandler<TParams = unknown, TResult = unknown>(
         method: string,
@@ -72,6 +88,8 @@ export class HostRpcBridge {
         this.handlers.set(method, {
             handler: handler as RpcHandler<never, unknown>,
             requiredPermissions,
+            serviceId: options?.serviceId,
+            pluginId: options?.pluginId,
         });
     }
 
@@ -111,6 +129,25 @@ export class HostRpcBridge {
 
         const record = this.handlers.get(method);
         if (!record) {
+            if (this.serviceRegistry?.isMethodDisabled(method)) {
+                const service = this.serviceRegistry.getServiceForMethod?.(method);
+                const feature = service?.id ?? method;
+                return {
+                    type: "response",
+                    id,
+                    success: false,
+                    error: {
+                        code: "FEATURE_DISABLED",
+                        message: `Feature '${feature}' is currently disabled or unavailable`,
+                        data: {
+                            feature,
+                            method,
+                            pluginId: service?.pluginId,
+                        },
+                    },
+                };
+            }
+
             return {
                 type: "response",
                 id,
@@ -118,6 +155,28 @@ export class HostRpcBridge {
                 error: {
                     code: "METHOD_NOT_FOUND",
                     message: `Method '${method}' not found on Host Runtime RPC bridge`,
+                },
+            };
+        }
+
+        if (
+            (record.serviceId && this.serviceRegistry?.isServiceDisabled?.(record.serviceId)) ||
+            this.serviceRegistry?.isMethodDisabled(method)
+        ) {
+            const service = this.serviceRegistry.getServiceForMethod?.(method);
+            const feature = record.serviceId ?? service?.id ?? method;
+            return {
+                type: "response",
+                id,
+                success: false,
+                error: {
+                    code: "FEATURE_DISABLED",
+                    message: `Feature '${feature}' is currently disabled or unavailable`,
+                    data: {
+                        feature,
+                        method,
+                        pluginId: record.pluginId ?? service?.pluginId,
+                    },
                 },
             };
         }

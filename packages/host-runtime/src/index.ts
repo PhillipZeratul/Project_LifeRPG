@@ -6,8 +6,10 @@ export * from "./rpc-bridge";
 export * from "./progression-store";
 export * from "./avatar-service";
 export * from "./avatar-rpc";
+export * from "./central-service-registry";
 export { CentralEventBus } from "./central-event-bus";
 export { PluginManager } from "./plugin-manager";
+export { ScopedPluginContext } from "./scoped-plugin-context";
 
 
 const bus = new CentralEventBus();
