@@ -68,6 +68,57 @@ describe("Avatar Progression Calculation (Pure Deterministic Engine)", () => {
     });
   });
 
+  it("calculates progression with point deductions from community plugins clamped at 0", () => {
+    const events: ProgressionEvent[] = [
+      {
+        id: "evt-gain-1",
+        avatarId: "avatar-default",
+        type: "xp_gained",
+        amount: 150,
+        timestamp: 1000,
+      },
+      {
+        id: "evt-deduct-1",
+        avatarId: "avatar-default",
+        type: "xp_deducted",
+        amount: -50,
+        timestamp: 2000,
+      },
+      {
+        id: "evt-stat-gain",
+        avatarId: "avatar-default",
+        type: "stat_xp_gained",
+        statId: "focus",
+        amount: 80,
+        timestamp: 3000,
+      },
+      {
+        id: "evt-stat-deduct",
+        avatarId: "avatar-default",
+        type: "stat_xp_deducted",
+        statId: "focus",
+        amount: -30,
+        timestamp: 4000,
+      },
+    ];
+
+    const progression = calculateAvatarProgression(events);
+    // Total XP = 150 - 50 + 80 - 30 = 150
+    // Level 2 (100 threshold), currentXp: 50, nextLevelXp: 200
+    expect(progression.totalXp).toBe(150);
+    expect(progression.level).toBe(2);
+    expect(progression.currentXp).toBe(50);
+
+    // Focus Stat: 80 - 30 = 50 XP -> Level 1, currentXp: 50, nextLevelXp: 100
+    expect(progression.stats["focus"]).toEqual({
+      statId: "focus",
+      level: 1,
+      currentXp: 50,
+      nextLevelXp: 100,
+      totalXp: 50,
+    });
+  });
+
   it("aggregates an append-only event stream into full AvatarProgression", () => {
     const events: ProgressionEvent[] = [
       {

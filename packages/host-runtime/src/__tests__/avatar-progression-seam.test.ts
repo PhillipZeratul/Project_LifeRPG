@@ -109,23 +109,38 @@ describe("Avatar & Additive Progression Engine Seam (RPC Bridge)", () => {
     expect(fetched.progression).toEqual(res2.progression);
   });
 
-  it("strictly enforces additive progression and rejects punitive deductions (ADR-0001)", async () => {
-    const avatarId = "test-avatar-3";
+  it("allows community plugins to record progression deductions (negative XP) and clamps total XP at 0", async () => {
+    const avatarId = "test-avatar-deduction";
 
-    // Attempt negative XP deduction
-    await expect(
-      client.call("avatar.recordProgressionEvent", {
-        avatarId,
-        amount: -20,
-        statId: "vitality",
-      })
-    ).rejects.toMatchObject({
-      name: "RpcError",
-      code: "PUNITIVE_DEDUCTION_FORBIDDEN",
-      message: expect.stringContaining("additive"),
+    // Start with 50 XP in vitality
+    await client.call("avatar.recordProgressionEvent", {
+      avatarId,
+      amount: 50,
+      statId: "vitality",
     });
 
-    // Attempt zero XP
+    // Deduce 20 XP (e.g. from a penalty or spending mechanic in a community plugin)
+    const afterDeduction = await client.call<AvatarRecordEventResult>("avatar.recordProgressionEvent", {
+      avatarId,
+      amount: -20,
+      statId: "vitality",
+    });
+
+    expect(afterDeduction.progression.totalXp).toBe(30);
+    expect(afterDeduction.progression.stats["vitality"]?.totalXp).toBe(30);
+
+    // Deduce 50 XP (exceeding current 30 XP) -> clamped at 0
+    const afterOverDeduction = await client.call<AvatarRecordEventResult>("avatar.recordProgressionEvent", {
+      avatarId,
+      amount: -50,
+      statId: "vitality",
+    });
+
+    expect(afterOverDeduction.progression.totalXp).toBe(0);
+    expect(afterOverDeduction.progression.level).toBe(1);
+    expect(afterOverDeduction.progression.stats["vitality"]?.totalXp).toBe(0);
+
+    // Attempt zero XP (should reject as non-zero amount required)
     await expect(
       client.call("avatar.recordProgressionEvent", {
         avatarId,
@@ -134,14 +149,8 @@ describe("Avatar & Additive Progression Engine Seam (RPC Bridge)", () => {
       })
     ).rejects.toMatchObject({
       name: "RpcError",
-      code: "PUNITIVE_DEDUCTION_FORBIDDEN",
+      message: expect.stringContaining("finite non-zero"),
     });
-
-    // Verify state remained untouched at 0 XP
-    const state = await client.call<AvatarGetResult>("avatar.get", {
-      avatarId,
-    });
-    expect(state.progression.totalXp).toBe(0);
   });
 
   it("preserves append-only event stream history for sync reconciliation per ADR-0001", async () => {

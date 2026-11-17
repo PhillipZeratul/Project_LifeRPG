@@ -6,7 +6,7 @@ Project_LifeRPG is a local-first, server-synced gamification system designed to 
 
 ### Core Product Principles
 
-* **Positive, Additive Progression**: Growth is cumulative. There are no punitive mechanics, health/HP loss, or demotions for missed days.
+* **Positive, Additive Progression**: Growth is cumulative. Core plugins do not introduce punitive mechanics, health/HP loss, or demotions for missed days (though community plugins may implement deductions via the append-only progression stream if desired).
 * **Local-First Speed**: Every interaction reads and writes to local storage with zero network lag; sync with Supabase is backgrounded and opportunistic.
 * **Intentional Social & Accountability**: Supports peer-to-peer and small-group social mechanics (co-op habit pacts, friendly competition, accountability buddies) without noisy algorithmic feeds.
 * **Extensible & Safe**: The core app provides the temporal canvas and social anchors, while community plugins expand mechanics inside a secure sandbox.

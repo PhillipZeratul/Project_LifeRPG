@@ -46,7 +46,8 @@ export function calculateProgression(
 
 /**
  * Aggregates an append-only sequence of progression events into full AvatarProgression.
- * Strictly additive: negative or non-finite event amounts are ignored.
+ * Progression events (including point deductions from community plugins) are summed,
+ * with total XP and individual stat XP clamped at a minimum of 0.
  */
 export function calculateAvatarProgression(
   events: readonly ProgressionEvent[],
@@ -56,7 +57,7 @@ export function calculateAvatarProgression(
   const statXpMap: Record<StatId, number> = {};
 
   for (const event of events) {
-    if (typeof event.amount !== "number" || !Number.isFinite(event.amount) || event.amount <= 0) {
+    if (typeof event.amount !== "number" || !Number.isFinite(event.amount)) {
       continue;
     }
 
@@ -67,11 +68,11 @@ export function calculateAvatarProgression(
     }
   }
 
-  const overallProgression = calculateProgression(totalAvatarXp, baseLevelXp);
+  const overallProgression = calculateProgression(Math.max(0, totalAvatarXp), baseLevelXp);
   const stats: Record<StatId, StatProgression> = {};
 
   for (const [statId, statTotalXp] of Object.entries(statXpMap)) {
-    const calc = calculateProgression(statTotalXp, baseLevelXp);
+    const calc = calculateProgression(Math.max(0, statTotalXp), baseLevelXp);
     stats[statId] = {
       statId,
       ...calc,

@@ -44,7 +44,7 @@ A specialized area of competence that advances through associated Habits and Tas
 _Avoid_: Talent, Proficiency, Capability
 
 **Experience (XP)**:
-A strictly additive quantitative measure of effort that levels up Stats, Skills, or the Avatar without punitive deductions.
+A quantitative measure of effort that levels up Stats, Skills, or the Avatar. Core plugins treat Experience as strictly additive without punitive deductions; community plugins may record deductions on the append-only event stream if desired.
 _Avoid_: Exp, Points, Score
 
 **Streak**:
