@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   RpcClient,
+  PermissionDeniedError,
   createMessageChannelTransportPair,
 } from "@liferpg/sdk";
 import { HostRpcBridge } from "../rpc-bridge";
@@ -141,6 +142,203 @@ describe("Host Runtime RPC Seam", () => {
     await expect(client.call("system.ping")).rejects.toMatchObject({
       name: "RpcError",
       code: "DISPOSED",
+    });
+  });
+
+  describe("Capability-Gated Invocation & Permission Enforcement", () => {
+    it("rejects unauthorized RPC calls with typed PermissionDeniedError without executing underlying handler", async () => {
+      const handlerSpy = vi.fn().mockResolvedValue({ success: true });
+      bridge.registerHandler("avatar.updateVisuals", handlerSpy, {
+        requiredPermissions: ["avatar:write"],
+      });
+
+      // Connect an untrusted caller with only avatar:read
+      const [hostTransport, untrustedTransport] = createMessageChannelTransportPair();
+      const disconnectUntrusted = bridge.connect(hostTransport, {
+        callerId: "untrusted-plugin",
+        permissions: ["avatar:read"],
+      });
+      const untrustedClient = new RpcClient(untrustedTransport);
+
+      try {
+        await untrustedClient.call("avatar.updateVisuals", { color: "blue" });
+        expect.unreachable("Should have been blocked with PermissionDeniedError");
+      } catch (err) {
+        expect(err).toBeInstanceOf(PermissionDeniedError);
+        const permErr = err as PermissionDeniedError;
+        expect(permErr.code).toBe("PERMISSION_DENIED");
+        expect(permErr.permission).toBe("avatar:write");
+        expect(permErr.callerId).toBe("untrusted-plugin");
+        expect(permErr.method).toBe("avatar.updateVisuals");
+        expect(permErr.message).toContain("avatar:write");
+      }
+
+      // Crucial security invariant: underlying service handler must NOT have executed
+      expect(handlerSpy).not.toHaveBeenCalled();
+
+      untrustedClient.dispose();
+      disconnectUntrusted();
+    });
+
+    it("allows authorized RPC calls to proceed and return typed responses", async () => {
+      interface TrackHabitParams {
+        habitId: string;
+        timestamp: number;
+      }
+      interface TrackHabitResult {
+        streak: number;
+        xpGranted: number;
+      }
+
+      const handlerSpy = vi.fn().mockImplementation((_params: TrackHabitParams): TrackHabitResult => {
+        return {
+          streak: 5,
+          xpGranted: 20,
+        };
+      });
+
+      bridge.registerHandler<TrackHabitParams, TrackHabitResult>(
+        "habits.track",
+        handlerSpy,
+        { requiredPermissions: "habits:track" }
+      );
+
+      const [hostTransport, authorizedTransport] = createMessageChannelTransportPair();
+      const disconnect = bridge.connect(hostTransport, {
+        callerId: "authorized-plugin",
+        permissions: ["habits:track"],
+      });
+      const authorizedClient = new RpcClient(authorizedTransport);
+
+      const result = await authorizedClient.call<TrackHabitResult, TrackHabitParams>(
+        "habits.track",
+        {
+          habitId: "habit-123",
+          timestamp: 1700000000,
+        }
+      );
+
+      expect(result).toEqual({
+        streak: 5,
+        xpGranted: 20,
+      });
+      expect(handlerSpy).toHaveBeenCalledTimes(1);
+      expect(handlerSpy).toHaveBeenCalledWith(
+        { habitId: "habit-123", timestamp: 1700000000 },
+        expect.objectContaining({
+          method: "habits.track",
+          caller: expect.objectContaining({
+            callerId: "authorized-plugin",
+            permissions: ["habits:track"],
+          }),
+        })
+      );
+
+      authorizedClient.dispose();
+      disconnect();
+    });
+
+    it("requires caller to hold ALL required permissions when multiple capabilities are demanded", async () => {
+      const handlerSpy = vi.fn().mockResolvedValue({ ok: true });
+      bridge.registerHandler("skills.levelUp", handlerSpy, {
+        requiredPermissions: ["skills:write", "xp:grant"],
+      });
+
+      // Caller only has skills:write, missing xp:grant
+      const [hostTransport, partialTransport] = createMessageChannelTransportPair();
+      const disconnectPartial = bridge.connect(hostTransport, {
+        callerId: "partial-plugin",
+        permissions: ["skills:write"],
+      });
+      const partialClient = new RpcClient(partialTransport);
+
+      await expect(partialClient.call("skills.levelUp")).rejects.toMatchObject({
+        name: "PermissionDeniedError",
+        code: "PERMISSION_DENIED",
+        permission: "xp:grant",
+      });
+      expect(handlerSpy).not.toHaveBeenCalled();
+
+      partialClient.dispose();
+      disconnectPartial();
+
+      // Caller with both permissions succeeds
+      const [hostTransport2, fullTransport] = createMessageChannelTransportPair();
+      const disconnectFull = bridge.connect(hostTransport2, {
+        callerId: "full-plugin",
+        permissions: ["skills:write", "xp:grant"],
+      });
+      const fullClient = new RpcClient(fullTransport);
+
+      const res = await fullClient.call("skills.levelUp");
+      expect(res).toEqual({ ok: true });
+      expect(handlerSpy).toHaveBeenCalledTimes(1);
+
+      fullClient.dispose();
+      disconnectFull();
+    });
+
+    it("respects domain wildcards and superuser wildcard permissions", async () => {
+      const avatarReadSpy = vi.fn().mockResolvedValue({ name: "Knight" });
+      const habitsReadSpy = vi.fn().mockResolvedValue({ count: 3 });
+
+      bridge.registerHandler("avatar.getProfile", avatarReadSpy, {
+        requiredPermissions: "avatar:read",
+      });
+      bridge.registerHandler("habits.list", habitsReadSpy, {
+        requiredPermissions: "habits:read",
+      });
+
+      // Caller with avatar:* can access avatar.getProfile but not habits.list
+      const [hostTransport, wildcardTransport] = createMessageChannelTransportPair();
+      const disconnectWildcard = bridge.connect(hostTransport, {
+        callerId: "avatar-manager-plugin",
+        permissions: ["avatar:*"],
+      });
+      const wildcardClient = new RpcClient(wildcardTransport);
+
+      const avatarRes = await wildcardClient.call("avatar.getProfile");
+      expect(avatarRes).toEqual({ name: "Knight" });
+      expect(avatarReadSpy).toHaveBeenCalledTimes(1);
+
+      await expect(wildcardClient.call("habits.list")).rejects.toMatchObject({
+        name: "PermissionDeniedError",
+        code: "PERMISSION_DENIED",
+        permission: "habits:read",
+      });
+      expect(habitsReadSpy).not.toHaveBeenCalled();
+
+      wildcardClient.dispose();
+      disconnectWildcard();
+
+      // Superuser caller with * can access anything
+      const [hostTransportAdmin, adminTransport] = createMessageChannelTransportPair();
+      const disconnectAdmin = bridge.connect(hostTransportAdmin, {
+        callerId: "admin-plugin",
+        permissions: ["*"],
+      });
+      const adminClient = new RpcClient(adminTransport);
+
+      const habitsRes = await adminClient.call("habits.list");
+      expect(habitsRes).toEqual({ count: 3 });
+      expect(habitsReadSpy).toHaveBeenCalledTimes(1);
+
+      adminClient.dispose();
+      disconnectAdmin();
+    });
+
+    it("permits unauthenticated and permissionless callers to access unrestricted methods", async () => {
+      bridge.registerHandler("system.version", () => "1.0.0");
+
+      const [hostTransport, openTransport] = createMessageChannelTransportPair();
+      const disconnect = bridge.connect(hostTransport);
+      const openClient = new RpcClient(openTransport);
+
+      const version = await openClient.call("system.version");
+      expect(version).toBe("1.0.0");
+
+      openClient.dispose();
+      disconnect();
     });
   });
 });

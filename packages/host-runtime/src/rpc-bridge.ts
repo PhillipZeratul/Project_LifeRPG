@@ -4,20 +4,75 @@ import type {
     RpcRequest,
     RpcResponse,
     RpcErrorPayload,
+    PluginPermission,
 } from "@liferpg/sdk";
 
+export interface CallerContext {
+    callerId?: string;
+    permissions?: readonly string[];
+}
+
+export interface BridgeConnectionOptions {
+    callerId?: string;
+    permissions?: readonly string[];
+}
+
+export interface RpcHandlerContext {
+    caller?: CallerContext;
+    method: string;
+}
+
+export interface RpcHandlerOptions {
+    requiredPermissions?: PluginPermission[] | PluginPermission;
+}
+
 export type RpcHandler<TParams = unknown, TResult = unknown> = (
-    params: TParams
+    params: TParams,
+    context: RpcHandlerContext
 ) => Promise<TResult> | TResult;
 
+interface HandlerRecord {
+    handler: RpcHandler<never, unknown>;
+    requiredPermissions: string[];
+}
+
+function matchesPermission(granted: string, required: string): boolean {
+    if (granted === "*" || granted === required) {
+        return true;
+    }
+    if (granted.endsWith(":*")) {
+        const grantedDomain = granted.slice(0, -2);
+        const [requiredDomain] = required.split(":");
+        if (grantedDomain === requiredDomain) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function hasPermission(callerPermissions: readonly string[], required: string): boolean {
+    return callerPermissions.some((granted) => matchesPermission(granted, required));
+}
+
 export class HostRpcBridge {
-    private handlers: Map<string, RpcHandler<never, unknown>> = new Map();
+    private handlers: Map<string, HandlerRecord> = new Map();
 
     public registerHandler<TParams = unknown, TResult = unknown>(
         method: string,
-        handler: RpcHandler<TParams, TResult>
+        handler: RpcHandler<TParams, TResult>,
+        options?: RpcHandlerOptions
     ): void {
-        this.handlers.set(method, handler as RpcHandler<never, unknown>);
+        let requiredPermissions: string[] = [];
+        if (options?.requiredPermissions) {
+            requiredPermissions = Array.isArray(options.requiredPermissions)
+                ? [...options.requiredPermissions]
+                : [options.requiredPermissions];
+        }
+
+        this.handlers.set(method, {
+            handler: handler as RpcHandler<never, unknown>,
+            requiredPermissions,
+        });
     }
 
     public unregisterHandler(method: string): void {
@@ -28,24 +83,34 @@ export class HostRpcBridge {
         return this.handlers.has(method);
     }
 
-    public connect(transport: IRpcTransport): () => void {
+    public getRequiredPermissions(method: string): string[] | undefined {
+        const record = this.handlers.get(method);
+        return record ? [...record.requiredPermissions] : undefined;
+    }
+
+    public connect(transport: IRpcTransport, options?: BridgeConnectionOptions): () => void {
+        const caller: CallerContext = {
+            callerId: options?.callerId,
+            permissions: options?.permissions ?? [],
+        };
+
         const unlisten = transport.onMessage(async (message: RpcMessage) => {
             if (message.type !== "request") {
                 return;
             }
 
-            const response = await this.dispatch(message);
+            const response = await this.dispatch(message, caller);
             transport.send(response);
         });
 
         return unlisten;
     }
 
-    public async dispatch(request: RpcRequest): Promise<RpcResponse> {
+    public async dispatch(request: RpcRequest, caller?: CallerContext): Promise<RpcResponse> {
         const { id, method, params } = request;
 
-        const handler = this.handlers.get(method);
-        if (!handler) {
+        const record = this.handlers.get(method);
+        if (!record) {
             return {
                 type: "response",
                 id,
@@ -57,8 +122,38 @@ export class HostRpcBridge {
             };
         }
 
+        // Validate permissions against caller context
+        if (record.requiredPermissions.length > 0) {
+            const callerPermissions = caller?.permissions ?? [];
+            const missingPermission = record.requiredPermissions.find(
+                (reqPerm) => !hasPermission(callerPermissions, reqPerm)
+            );
+
+            if (missingPermission) {
+                const callerDesc = caller?.callerId ? `'${caller.callerId}'` : "anonymous";
+                return {
+                    type: "response",
+                    id,
+                    success: false,
+                    error: {
+                        code: "PERMISSION_DENIED",
+                        message: `Caller ${callerDesc} lacks required permission '${missingPermission}' for method '${method}'`,
+                        data: {
+                            permission: missingPermission,
+                            method,
+                            callerId: caller?.callerId,
+                        },
+                    },
+                };
+            }
+        }
+
         try {
-            const result = await handler(params as never);
+            const context: RpcHandlerContext = {
+                caller,
+                method,
+            };
+            const result = await record.handler(params as never, context);
             return {
                 type: "response",
                 id,

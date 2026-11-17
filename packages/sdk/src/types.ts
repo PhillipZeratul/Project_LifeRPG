@@ -1,20 +1,13 @@
 import { BasePlugin } from "./base-plugin";
+import type { IPluginManifest } from "./manifest";
+
+export * from "./manifest";
 
 declare const __brand: unique symbol;
 
 export interface IPluginContext {
     manifest: IPluginManifest;
     events: IEventBus;
-}
-
-export interface IPluginManifest {
-    name: string;
-    version: string;
-    displayName: string;
-    author: string;
-    description: string;
-    dependencies?: Record<string, string>;
-    permissions?: string[];
 }
 
 export interface IPluginConstructor<T extends BasePlugin = BasePlugin> {

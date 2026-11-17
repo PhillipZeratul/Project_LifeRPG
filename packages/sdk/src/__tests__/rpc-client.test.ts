@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   RpcClient,
   RpcError,
+  PermissionDeniedError,
   createMessageChannelTransportPair,
   type RpcRequest,
 } from "../foundation/rpc";
@@ -59,6 +60,46 @@ describe("RpcClient & Transport", () => {
       expect(rpcErr.code).toBe("CUSTOM_ERROR");
       expect(rpcErr.message).toBe("Something failed");
       expect(rpcErr.data).toEqual({ detail: 123 });
+    } finally {
+      client.dispose();
+    }
+  });
+
+  it("deserializes typed PermissionDeniedError on unauthorized RPC response", async () => {
+    const [transportA, transportB] = createMessageChannelTransportPair();
+    const client = new RpcClient(transportA);
+
+    transportB.onMessage((msg) => {
+      if (msg.type === "request") {
+        transportB.send({
+          type: "response",
+          id: msg.id,
+          success: false,
+          error: {
+            code: "PERMISSION_DENIED",
+            message: "Caller lacks required permission 'avatar:read' for method 'avatar.getProfile'",
+            data: {
+              permission: "avatar:read",
+              method: "avatar.getProfile",
+              callerId: "untrusted-plugin",
+            },
+          },
+        });
+      }
+    });
+
+    try {
+      await client.call("avatar.getProfile");
+      expect.unreachable("Should have thrown PermissionDeniedError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(PermissionDeniedError);
+      expect(err).toBeInstanceOf(RpcError);
+      const permErr = err as PermissionDeniedError;
+      expect(permErr.code).toBe("PERMISSION_DENIED");
+      expect(permErr.permission).toBe("avatar:read");
+      expect(permErr.method).toBe("avatar.getProfile");
+      expect(permErr.callerId).toBe("untrusted-plugin");
+      expect(permErr.message).toContain("avatar:read");
     } finally {
       client.dispose();
     }

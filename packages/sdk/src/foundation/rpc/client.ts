@@ -1,4 +1,4 @@
-import { RpcError } from "./errors";
+import { RpcError, PermissionDeniedError } from "./errors";
 import type { IRpcTransport, RpcId, RpcMessage, RpcRequest } from "./types";
 
 export interface RpcClientOptions {
@@ -41,7 +41,22 @@ export class RpcClient {
         if (message.success) {
             pending.resolve(message.result);
         } else {
-            pending.reject(new RpcError(message.error));
+            if (message.error.code === "PERMISSION_DENIED") {
+                const data = message.error.data as
+                    | { permission?: string; method?: string; callerId?: string }
+                    | undefined;
+                pending.reject(
+                    new PermissionDeniedError({
+                        message: message.error.message,
+                        permission: data?.permission,
+                        method: data?.method,
+                        callerId: data?.callerId,
+                        data: message.error.data,
+                    })
+                );
+            } else {
+                pending.reject(new RpcError(message.error));
+            }
         }
     }
 
