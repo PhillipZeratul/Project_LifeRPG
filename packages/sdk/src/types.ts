@@ -3,7 +3,7 @@ import type { IPluginManifest } from "./manifest";
 
 export * from "./manifest";
 
-declare const __brand: unique symbol;
+export declare const __brand: unique symbol;
 
 export interface IPluginContext {
     manifest: IPluginManifest;
@@ -32,7 +32,7 @@ export interface IEventBus {
 
 export type EventCallback<T> = (payload: T) => Promise<void> | void;
 
-export type IEventDefinition<T> = string &{
+export type IEventDefinition<T> = (string | { readonly type: string }) & {
     readonly [__brand]: T;
 };
 

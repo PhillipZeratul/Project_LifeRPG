@@ -8,6 +8,7 @@
     { "path": "./plugins/core/routine" },
     { "path": "./plugins/core/calendar" },
     { "path": "./plugins/core/habit" },
+    { "path": "./plugins/core/task" },
     { "path": "./apps/desktop" },
     { "path": "./apps/mobile" }
   ]

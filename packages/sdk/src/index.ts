@@ -6,4 +6,5 @@ export * from "./foundation/avatar";
 export * from "./contracts/routine";
 export * from "./contracts/calendar";
 export * from "./contracts/habit";
+export * from "./contracts/task";
 

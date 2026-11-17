@@ -175,6 +175,9 @@ importers:
       '@liferpg/plugin-core-routine':
         specifier: workspace:*
         version: link:../../plugins/core/routine
+      '@liferpg/plugin-core-task':
+        specifier: workspace:*
+        version: link:../../plugins/core/task
       '@liferpg/plugin-core-timer':
         specifier: workspace:*
         version: link:../../plugins/core/timer
@@ -233,6 +236,12 @@ importers:
         version: link:../../../packages/sdk
 
   plugins/core/routine:
+    devDependencies:
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../../../packages/sdk
+
+  plugins/core/task:
     devDependencies:
       '@liferpg/sdk':
         specifier: workspace:*
