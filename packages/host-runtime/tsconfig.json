@@ -8,6 +8,7 @@
   "references": [
     { "path": "../sdk" },
     { "path": "../../plugins/core/timer" },
-    { "path": "../../plugins/core/routine" }
+    { "path": "../../plugins/core/routine" },
+    { "path": "../../plugins/core/habit" }
   ]
 }
