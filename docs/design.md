@@ -38,7 +38,7 @@ Project_LifeRPG/
 └── docs/                    # Architectural decisions (ADRs) and domain specs
 ```
 
-### Dependency Rules:
+### Dependency Rules
 
 1. `packages/sdk` has **zero internal dependencies**; it is the contract shared by the host and all plugins.
 2. `packages/host-runtime` owns the database, security validation, and sandbox creation.
