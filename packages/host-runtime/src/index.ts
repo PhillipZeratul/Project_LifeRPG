@@ -16,7 +16,6 @@ export { LocalTaskStore, TaskStoreError, default as TaskPlugin } from "@liferpg/
 export { wireHabitProgressionIntegration } from "./habit-progression";
 export { wireTaskProgressionIntegration } from "./task-progression";
 
-
 const bus = new CentralEventBus();
 const manager = new PluginManager(bus);
 
@@ -29,5 +28,4 @@ export async function bootstrap() {
     });
 
     bus.emit(TimerEvents.Start, { durationSeconds: 25 * 60 });
-
 }

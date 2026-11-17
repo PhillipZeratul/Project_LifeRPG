@@ -313,17 +313,15 @@ describe("Habit Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => 
             });
             const readerClient = new RpcClient(clientTransport);
 
-            await expect(
-                readerClient.call("habit.create", { name: "Should Fail" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("habit.create", { name: "Should Fail" })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                readerClient.call("habit.update", { id: "h-1", name: "Should Fail" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("habit.update", { id: "h-1", name: "Should Fail" })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                readerClient.call("habit.delete", { id: "h-1" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("habit.delete", { id: "h-1" })).rejects.toThrow(PermissionDeniedError);
 
             readerClient.dispose();
         });
@@ -340,13 +338,13 @@ describe("Habit Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => 
                 name: "Track Test",
             });
 
-            await expect(
-                noTrackClient.call("habit.track", { habitId: habit.id })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(noTrackClient.call("habit.track", { habitId: habit.id })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                noTrackClient.call("habit.complete", { habitId: habit.id })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(noTrackClient.call("habit.complete", { habitId: habit.id })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
             noTrackClient.dispose();
         });
@@ -359,14 +357,10 @@ describe("Habit Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => 
             });
             const trackerClient = new RpcClient(clientTransport);
 
-            await expect(trackerClient.call("habit.get", { id: "any" })).rejects.toThrow(
-                PermissionDeniedError
-            );
-            await expect(trackerClient.call("habit.list")).rejects.toThrow(
-                PermissionDeniedError
-            );
+            await expect(trackerClient.call("habit.get", { id: "any" })).rejects.toThrow(PermissionDeniedError);
+            await expect(trackerClient.call("habit.list")).rejects.toThrow(PermissionDeniedError);
             await expect(trackerClient.call("habit.getCompletions", { habitId: "any" })).rejects.toThrow(
-                PermissionDeniedError
+                PermissionDeniedError,
             );
 
             trackerClient.dispose();

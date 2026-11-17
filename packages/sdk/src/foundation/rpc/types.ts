@@ -39,4 +39,3 @@ export interface IRpcTransport {
 export interface IFeatureAvailability {
     isAvailable(feature: string): Promise<boolean>;
 }
-

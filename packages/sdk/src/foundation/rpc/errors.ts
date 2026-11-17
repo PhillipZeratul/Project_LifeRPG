@@ -85,9 +85,7 @@ export class FeatureDisabledError extends RpcError {
             this.name = "FeatureDisabledError";
         } else {
             const featureName = payload.feature ?? payload.pluginId ?? payload.method ?? "requested feature";
-            const message =
-                payload.message ??
-                `Feature '${featureName}' is currently disabled or unavailable`;
+            const message = payload.message ?? `Feature '${featureName}' is currently disabled or unavailable`;
 
             super({
                 code: "FEATURE_DISABLED",
@@ -109,4 +107,3 @@ export class FeatureDisabledError extends RpcError {
         Object.setPrototypeOf(this, new.target.prototype);
     }
 }
-

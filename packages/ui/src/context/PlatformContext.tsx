@@ -10,6 +10,6 @@ export const PlatformProvider: React.FC<{
 
 export const usePlatform = (): IPlatformBridge => {
     const ctx = useContext(PlatformContext);
-    if(!ctx) throw new Error("usePlatform must be used with PlatformProvider");
+    if (!ctx) throw new Error("usePlatform must be used with PlatformProvider");
     return ctx;
-}
+};

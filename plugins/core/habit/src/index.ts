@@ -33,7 +33,9 @@ export default class HabitPlugin extends BasePlugin {
     }
 
     async onLoad(): Promise<void> {
-        console.log(`[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`);
+        console.log(
+            `[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`,
+        );
 
         if (this.context.registerRpcHandler) {
             // Write methods: require habits:write
@@ -44,7 +46,7 @@ export default class HabitPlugin extends BasePlugin {
                     this.context.events.emit(HabitEvents.Created, habit);
                     return habit;
                 },
-                { requiredPermissions: ["habits:write"], serviceId: "habit" }
+                { requiredPermissions: ["habits:write"], serviceId: "habit" },
             );
 
             this.context.registerRpcHandler<UpdateHabitParams>(
@@ -54,7 +56,7 @@ export default class HabitPlugin extends BasePlugin {
                     this.context.events.emit(HabitEvents.Updated, updated);
                     return updated;
                 },
-                { requiredPermissions: ["habits:write"], serviceId: "habit" }
+                { requiredPermissions: ["habits:write"], serviceId: "habit" },
             );
 
             this.context.registerRpcHandler<DeleteHabitParams>(
@@ -65,7 +67,7 @@ export default class HabitPlugin extends BasePlugin {
                     this.context.events.emit(HabitEvents.Deleted, { id: params.id, habit: existing });
                     return result;
                 },
-                { requiredPermissions: ["habits:write"], serviceId: "habit" }
+                { requiredPermissions: ["habits:write"], serviceId: "habit" },
             );
 
             // Read methods: require habits:read
@@ -74,7 +76,7 @@ export default class HabitPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getHabit(params.id);
                 },
-                { requiredPermissions: ["habits:read"], serviceId: "habit" }
+                { requiredPermissions: ["habits:read"], serviceId: "habit" },
             );
 
             this.context.registerRpcHandler<ListHabitsParams | undefined>(
@@ -82,7 +84,7 @@ export default class HabitPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.listHabits(params);
                 },
-                { requiredPermissions: ["habits:read"], serviceId: "habit" }
+                { requiredPermissions: ["habits:read"], serviceId: "habit" },
             );
 
             this.context.registerRpcHandler<GetHabitCompletionsParams | undefined>(
@@ -90,7 +92,7 @@ export default class HabitPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getCompletions(params);
                 },
-                { requiredPermissions: ["habits:read"], serviceId: "habit" }
+                { requiredPermissions: ["habits:read"], serviceId: "habit" },
             );
 
             this.context.registerRpcHandler<GetHabitStreakParams>(
@@ -98,7 +100,7 @@ export default class HabitPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getStreak(params);
                 },
-                { requiredPermissions: ["habits:read"], serviceId: "habit" }
+                { requiredPermissions: ["habits:read"], serviceId: "habit" },
             );
 
             // Tracking methods: require habits:track
@@ -114,17 +116,15 @@ export default class HabitPlugin extends BasePlugin {
                 return result;
             };
 
-            this.context.registerRpcHandler<TrackHabitParams>(
-                "habit.track",
-                handleTrack,
-                { requiredPermissions: ["habits:track"], serviceId: "habit" }
-            );
+            this.context.registerRpcHandler<TrackHabitParams>("habit.track", handleTrack, {
+                requiredPermissions: ["habits:track"],
+                serviceId: "habit",
+            });
 
-            this.context.registerRpcHandler<TrackHabitParams>(
-                "habit.complete",
-                handleTrack,
-                { requiredPermissions: ["habits:track"], serviceId: "habit" }
-            );
+            this.context.registerRpcHandler<TrackHabitParams>("habit.complete", handleTrack, {
+                requiredPermissions: ["habits:track"],
+                serviceId: "habit",
+            });
         }
     }
 

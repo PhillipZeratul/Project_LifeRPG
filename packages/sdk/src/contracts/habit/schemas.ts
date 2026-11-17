@@ -1,8 +1,4 @@
-import type {
-    CreateHabitParams,
-    UpdateHabitParams,
-    TrackHabitParams,
-} from "./types";
+import type { CreateHabitParams, UpdateHabitParams, TrackHabitParams } from "./types";
 import { validateDaysOfWeek, type ValidationResult } from "../routine/schemas";
 
 export function validateCreateHabitParams(params: unknown): ValidationResult {

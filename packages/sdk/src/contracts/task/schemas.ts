@@ -1,10 +1,5 @@
 import type { ValidationResult } from "../routine/schemas";
-import type {
-    CreateTaskParams,
-    UpdateTaskParams,
-    ScheduleTaskParams,
-    CompleteTaskParams,
-} from "./types";
+import type { CreateTaskParams, UpdateTaskParams, ScheduleTaskParams, CompleteTaskParams } from "./types";
 
 export function validateCreateTaskParams(params: unknown): ValidationResult {
     const errors: string[] = [];
@@ -35,7 +30,10 @@ export function validateCreateTaskParams(params: unknown): ValidationResult {
         errors.push("Task 'timeBlockId' must be a string if provided.");
     }
 
-    if (p.timeBlockIds !== undefined && (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))) {
+    if (
+        p.timeBlockIds !== undefined &&
+        (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))
+    ) {
         errors.push("Task 'timeBlockIds' must be an array of strings if provided.");
     }
 
@@ -94,7 +92,11 @@ export function validateUpdateTaskParams(params: unknown): ValidationResult {
         errors.push("Task 'timeBlockId' must be a string or null if provided.");
     }
 
-    if (p.timeBlockIds !== undefined && p.timeBlockIds !== null && (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))) {
+    if (
+        p.timeBlockIds !== undefined &&
+        p.timeBlockIds !== null &&
+        (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))
+    ) {
         errors.push("Task 'timeBlockIds' must be an array of strings or null if provided.");
     }
 
@@ -127,7 +129,11 @@ export function validateScheduleTaskParams(params: unknown): ValidationResult {
         errors.push("Task 'timeBlockId' must be a string or null if provided.");
     }
 
-    if (p.timeBlockIds !== undefined && p.timeBlockIds !== null && (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))) {
+    if (
+        p.timeBlockIds !== undefined &&
+        p.timeBlockIds !== null &&
+        (!Array.isArray(p.timeBlockIds) || !p.timeBlockIds.every((id) => typeof id === "string"))
+    ) {
         errors.push("Task 'timeBlockIds' must be an array of strings or null if provided.");
     }
 

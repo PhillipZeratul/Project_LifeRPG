@@ -13,11 +13,7 @@ import {
 } from "@liferpg/sdk";
 import RoutinePlugin from "@liferpg/plugin-core-routine";
 import CalendarPlugin from "@liferpg/plugin-core-calendar";
-import {
-    HostRpcBridge,
-    CentralEventBus,
-    CentralServiceRegistry,
-} from "../index";
+import { HostRpcBridge, CentralEventBus, CentralServiceRegistry } from "../index";
 
 describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
     let bridge: HostRpcBridge;
@@ -42,12 +38,7 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
         const [hostTransport, clientTransport] = createMessageChannelTransportPair();
         const disconnect = bridge.connect(hostTransport, {
             callerId: "test-client",
-            permissions: [
-                "calendar:read",
-                "calendar:write",
-                "routines:read",
-                "routines:write",
-            ],
+            permissions: ["calendar:read", "calendar:write", "routines:read", "routines:write"],
         });
         client = new RpcClient(clientTransport);
 
@@ -375,13 +366,11 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
                     startTime: "12:00",
                     endTime: "13:00",
                     updated_at: 1500,
-                })
+                }),
             ).rejects.toThrow();
 
             // Direct fetch confirms not found
-            await expect(
-                client.call("calendar.getOverride", { id: "ovr-to-delete" })
-            ).rejects.toThrow();
+            await expect(client.call("calendar.getOverride", { id: "ovr-to-delete" })).rejects.toThrow();
         });
     });
 
@@ -408,7 +397,7 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
                         title: "Unauthorized Event",
                         startTime: "10:00",
                         endTime: "11:00",
-                    })
+                    }),
                 ).rejects.toBeInstanceOf(PermissionDeniedError);
             } finally {
                 readOnlyClient.dispose();
@@ -426,14 +415,14 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
 
             try {
                 await expect(
-                    unauthClient.call("calendar.getDayTimeline", { date: "2026-11-17" })
+                    unauthClient.call("calendar.getDayTimeline", { date: "2026-11-17" }),
                 ).rejects.toBeInstanceOf(PermissionDeniedError);
 
                 await expect(
                     unauthClient.call("calendar.getTimelineRange", {
                         startDate: "2026-11-17",
                         endDate: "2026-11-18",
-                    })
+                    }),
                 ).rejects.toBeInstanceOf(PermissionDeniedError);
             } finally {
                 unauthClient.dispose();
@@ -450,9 +439,9 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
             await serviceRegistry.disablePlugin("@liferpg/plugin-core-calendar");
 
             expect(await client.isAvailable("calendar.getDayTimeline")).toBe(false);
-            await expect(
-                client.call("calendar.getDayTimeline", { date: "2026-11-17" })
-            ).rejects.toBeInstanceOf(FeatureDisabledError);
+            await expect(client.call("calendar.getDayTimeline", { date: "2026-11-17" })).rejects.toBeInstanceOf(
+                FeatureDisabledError,
+            );
 
             // Re-enable calendar plugin
             await serviceRegistry.enablePlugin("@liferpg/plugin-core-calendar");
@@ -584,15 +573,13 @@ describe("Calendar Temporal Canvas Service Seam (Host RPC Bridge)", () => {
         });
 
         it("rejects invalid date query format with validation error", async () => {
-            await expect(
-                client.call("calendar.getDayTimeline", { date: "17-11-2026" })
-            ).rejects.toThrow();
+            await expect(client.call("calendar.getDayTimeline", { date: "17-11-2026" })).rejects.toThrow();
 
             await expect(
                 client.call("calendar.getTimelineRange", {
                     startDate: "2026-11-20",
                     endDate: "2026-11-10",
-                })
+                }),
             ).rejects.toThrow();
         });
     });

@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-    generateId,
-    shouldApplyLwwUpdate,
-    type AvatarId,
-    type StatId,
-} from "../index";
+import { generateId, shouldApplyLwwUpdate, type AvatarId, type StatId } from "../index";
 import * as CalendarFoundation from "../foundation/calendar";
 
 describe("SDK Foundation Layer", () => {
@@ -38,7 +33,7 @@ describe("SDK Foundation Layer", () => {
         it("allows string assignment and casting for AvatarId and StatId", () => {
             const avatarId: AvatarId = "avatar-test-123";
             const statId: StatId = "focus";
-            const castedAvatar = ("avatar-cast" as AvatarId);
+            const castedAvatar = "avatar-cast" as AvatarId;
             const rawString: string = avatarId;
 
             expect(typeof avatarId).toBe("string");

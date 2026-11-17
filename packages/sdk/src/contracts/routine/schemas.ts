@@ -1,9 +1,4 @@
-import type {
-    CreateRoutineParams,
-    UpdateRoutineParams,
-    CreateTimeBlockParams,
-    UpdateTimeBlockParams,
-} from "./types";
+import type { CreateRoutineParams, UpdateRoutineParams, CreateTimeBlockParams, UpdateTimeBlockParams } from "./types";
 
 export interface ValidationResult {
     valid: boolean;

@@ -32,7 +32,9 @@ export default class TaskPlugin extends BasePlugin {
     }
 
     async onLoad(): Promise<void> {
-        console.log(`[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`);
+        console.log(
+            `[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`,
+        );
 
         if (this.context.registerRpcHandler) {
             // Write methods: require tasks:write
@@ -43,7 +45,7 @@ export default class TaskPlugin extends BasePlugin {
                     this.context.events.emit(TaskEvents.Created, task);
                     return task;
                 },
-                { requiredPermissions: ["tasks:write"], serviceId: "task" }
+                { requiredPermissions: ["tasks:write"], serviceId: "task" },
             );
 
             this.context.registerRpcHandler<UpdateTaskParams>(
@@ -53,7 +55,7 @@ export default class TaskPlugin extends BasePlugin {
                     this.context.events.emit(TaskEvents.Updated, updated);
                     return updated;
                 },
-                { requiredPermissions: ["tasks:write"], serviceId: "task" }
+                { requiredPermissions: ["tasks:write"], serviceId: "task" },
             );
 
             this.context.registerRpcHandler<DeleteTaskParams>(
@@ -64,7 +66,7 @@ export default class TaskPlugin extends BasePlugin {
                     this.context.events.emit(TaskEvents.Deleted, { id: params.id, task: existing });
                     return result;
                 },
-                { requiredPermissions: ["tasks:write"], serviceId: "task" }
+                { requiredPermissions: ["tasks:write"], serviceId: "task" },
             );
 
             this.context.registerRpcHandler<ScheduleTaskParams>(
@@ -79,7 +81,7 @@ export default class TaskPlugin extends BasePlugin {
                     });
                     return scheduled;
                 },
-                { requiredPermissions: ["tasks:write"], serviceId: "task" }
+                { requiredPermissions: ["tasks:write"], serviceId: "task" },
             );
 
             this.context.registerRpcHandler<CompleteTaskParams>(
@@ -97,7 +99,7 @@ export default class TaskPlugin extends BasePlugin {
                     }
                     return result;
                 },
-                { requiredPermissions: ["tasks:write"], serviceId: "task" }
+                { requiredPermissions: ["tasks:write"], serviceId: "task" },
             );
 
             // Read methods: require tasks:read
@@ -106,7 +108,7 @@ export default class TaskPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getTask(params.id);
                 },
-                { requiredPermissions: ["tasks:read"], serviceId: "task" }
+                { requiredPermissions: ["tasks:read"], serviceId: "task" },
             );
 
             this.context.registerRpcHandler<ListTasksParams | undefined>(
@@ -114,7 +116,7 @@ export default class TaskPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.listTasks(params);
                 },
-                { requiredPermissions: ["tasks:read"], serviceId: "task" }
+                { requiredPermissions: ["tasks:read"], serviceId: "task" },
             );
         }
     }

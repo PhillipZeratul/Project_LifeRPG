@@ -28,10 +28,9 @@ export class CentralServiceRegistry implements IServiceRegistryQuery {
     constructor(
         private bridge: HostRpcBridge,
         private eventBus: CentralEventBus,
-        pluginManager?: PluginManager
+        pluginManager?: PluginManager,
     ) {
-        this.pluginManager =
-            pluginManager ?? new PluginManager(this.eventBus, this.bridge, this);
+        this.pluginManager = pluginManager ?? new PluginManager(this.eventBus, this.bridge, this);
 
         this.bridge.setServiceRegistry(this);
         this.registerSystemHandlers();
@@ -54,20 +53,17 @@ export class CentralServiceRegistry implements IServiceRegistryQuery {
     }
 
     private registerSystemHandlers(): void {
-        this.bridge.registerHandler(
-            "system.isFeatureAvailable",
-            (params: { feature?: string }) => {
-                const feature = params?.feature ?? "";
-                return { available: this.isAvailable(feature) };
-            }
-        );
+        this.bridge.registerHandler("system.isFeatureAvailable", (params: { feature?: string }) => {
+            const feature = params?.feature ?? "";
+            return { available: this.isAvailable(feature) };
+        });
 
         this.bridge.registerHandler(
             "system.isAvailable",
             (params: { feature?: string; service?: string; method?: string }) => {
                 const target = params?.feature ?? params?.service ?? params?.method ?? "";
                 return { available: this.isAvailable(target) };
-            }
+            },
         );
     }
 

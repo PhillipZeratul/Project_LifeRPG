@@ -119,8 +119,8 @@ describe("Habit Contracts & Schema Validation", () => {
             const dayMs = 24 * 60 * 60 * 1000;
             // Let reference "now" be anchor Day 3 at 12:00
             const day1 = 1700000000000; // e.g. Day 1
-            const day2 = day1 + dayMs;   // Day 2
-            const day3 = day2 + dayMs;   // Day 3
+            const day2 = day1 + dayMs; // Day 2
+            const day3 = day2 + dayMs; // Day 3
 
             const completions: HabitCompletion[] = [
                 {

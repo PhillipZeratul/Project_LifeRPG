@@ -43,8 +43,7 @@ export class RpcClient implements IFeatureAvailability {
         } else {
             if (message.error.code === "PERMISSION_DENIED") {
                 const data = message.error.data as
-                    | { permission?: string; method?: string; callerId?: string }
-                    | undefined;
+                    { permission?: string; method?: string; callerId?: string } | undefined;
                 pending.reject(
                     new PermissionDeniedError({
                         message: message.error.message,
@@ -52,12 +51,10 @@ export class RpcClient implements IFeatureAvailability {
                         method: data?.method,
                         callerId: data?.callerId,
                         data: message.error.data,
-                    })
+                    }),
                 );
             } else if (message.error.code === "FEATURE_DISABLED") {
-                const data = message.error.data as
-                    | { feature?: string; pluginId?: string; method?: string }
-                    | undefined;
+                const data = message.error.data as { feature?: string; pluginId?: string; method?: string } | undefined;
                 pending.reject(
                     new FeatureDisabledError({
                         message: message.error.message,
@@ -65,7 +62,7 @@ export class RpcClient implements IFeatureAvailability {
                         pluginId: data?.pluginId,
                         method: data?.method,
                         data: message.error.data,
-                    })
+                    }),
                 );
             } else {
                 pending.reject(new RpcError(message.error));
@@ -76,7 +73,7 @@ export class RpcClient implements IFeatureAvailability {
     public async call<TResult = unknown, TParams = unknown>(
         method: string,
         params?: TParams,
-        timeoutMs?: number
+        timeoutMs?: number,
     ): Promise<TResult> {
         if (this.isDisposed) {
             throw new RpcError({
@@ -102,7 +99,7 @@ export class RpcClient implements IFeatureAvailability {
                     new RpcError({
                         code: "TIMEOUT",
                         message: `RPC request '${method}' timed out after ${timeout}ms`,
-                    })
+                    }),
                 );
             }, timeout);
 
@@ -128,10 +125,9 @@ export class RpcClient implements IFeatureAvailability {
         }
 
         try {
-            const response = await this.call<{ available: boolean }, { feature: string }>(
-                "system.isFeatureAvailable",
-                { feature }
-            );
+            const response = await this.call<{ available: boolean }, { feature: string }>("system.isFeatureAvailable", {
+                feature,
+            });
             return Boolean(response?.available);
         } catch {
             return false;
@@ -151,7 +147,7 @@ export class RpcClient implements IFeatureAvailability {
                 new RpcError({
                     code: "DISPOSED",
                     message: "RPC client was disposed before response arrived",
-                })
+                }),
             );
         }
         this.pendingRequests.clear();

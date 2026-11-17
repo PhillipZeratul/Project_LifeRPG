@@ -31,7 +31,7 @@ function getDayNumber(timestamp: number): number {
 export function calculateHabitStreak(
     habitId: string,
     completions: HabitCompletion[],
-    referenceTimestamp: number = Date.now()
+    referenceTimestamp: number = Date.now(),
 ): HabitStreak {
     if (!completions || completions.length === 0) {
         return {
@@ -118,7 +118,7 @@ function formatUtcDate(timestamp: number): string {
  */
 export function calculateHabitHeatmap(
     completions: HabitCompletion[],
-    options?: HabitHeatmapOptions
+    options?: HabitHeatmapOptions,
 ): HabitHeatmapEntry[] {
     const map = new Map<string, HabitHeatmapEntry>();
 
@@ -164,4 +164,3 @@ export function calculateHabitHeatmap(
 
     return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
 }
-

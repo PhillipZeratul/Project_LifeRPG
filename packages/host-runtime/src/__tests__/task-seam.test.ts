@@ -201,7 +201,7 @@ describe("Task Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => {
                     title: "Resurrected Task",
                     created_at: 1500,
                     updated_at: 1500,
-                })
+                }),
             ).rejects.toThrow(/deleted/i);
         });
     });
@@ -415,25 +415,21 @@ describe("Task Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => {
             });
             const readerClient = new RpcClient(clientTransport);
 
-            await expect(
-                readerClient.call("task.create", { title: "Forbidden Task" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("task.create", { title: "Forbidden Task" })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                readerClient.call("task.update", { id: "t-1", title: "Forbidden Update" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("task.update", { id: "t-1", title: "Forbidden Update" })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                readerClient.call("task.delete", { id: "t-1" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("task.delete", { id: "t-1" })).rejects.toThrow(PermissionDeniedError);
 
-            await expect(
-                readerClient.call("task.schedule", { id: "t-1", timeBlockId: "tb-1" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("task.schedule", { id: "t-1", timeBlockId: "tb-1" })).rejects.toThrow(
+                PermissionDeniedError,
+            );
 
-            await expect(
-                readerClient.call("task.complete", { id: "t-1" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(readerClient.call("task.complete", { id: "t-1" })).rejects.toThrow(PermissionDeniedError);
 
             readerClient.dispose();
         });
@@ -446,13 +442,9 @@ describe("Task Core Plugin Seam (Host RPC Bridge & Avatar Progression)", () => {
             });
             const writerClient = new RpcClient(clientTransport);
 
-            await expect(
-                writerClient.call("task.get", { id: "any" })
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(writerClient.call("task.get", { id: "any" })).rejects.toThrow(PermissionDeniedError);
 
-            await expect(
-                writerClient.call("task.list")
-            ).rejects.toThrow(PermissionDeniedError);
+            await expect(writerClient.call("task.list")).rejects.toThrow(PermissionDeniedError);
 
             writerClient.dispose();
         });

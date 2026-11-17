@@ -40,10 +40,7 @@ export class LocalHabitStore {
     public createHabit(params: CreateHabitParams): Habit {
         const validation = validateCreateHabitParams(params);
         if (!validation.valid) {
-            throw new HabitStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new HabitStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const now = Date.now();
@@ -128,10 +125,7 @@ export class LocalHabitStore {
     public updateHabit(params: UpdateHabitParams): Habit {
         const validation = validateUpdateHabitParams(params);
         if (!validation.valid) {
-            throw new HabitStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new HabitStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         if (this.tombstones.has(params.id)) {
@@ -207,10 +201,7 @@ export class LocalHabitStore {
     public trackHabit(params: TrackHabitParams): TrackHabitResult {
         const validation = validateTrackHabitParams(params);
         if (!validation.valid) {
-            throw new HabitStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new HabitStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const habit = this.getHabit(params.habitId);

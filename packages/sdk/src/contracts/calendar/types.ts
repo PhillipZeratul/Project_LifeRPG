@@ -9,11 +9,11 @@ export interface CalendarTimeBlock {
     title: string;
     description?: string;
     startTime: string; // "HH:MM"
-    endTime: string;   // "HH:MM"
+    endTime: string; // "HH:MM"
     startDateTime: string; // ISO 8601 string, e.g. "2026-11-17T09:00:00.000Z"
-    endDateTime: string;   // ISO 8601 string, e.g. "2026-11-17T10:30:00.000Z"
+    endDateTime: string; // ISO 8601 string, e.g. "2026-11-17T10:30:00.000Z"
     startTimestamp: number; // epoch ms
-    endTimestamp: number;   // epoch ms
+    endTimestamp: number; // epoch ms
     durationMinutes: number;
     color?: string;
     isOverride: boolean;
@@ -97,7 +97,7 @@ export interface GetDayTimelineParams {
 
 export interface GetTimelineRangeParams {
     startDate: string; // "YYYY-MM-DD"
-    endDate: string;   // "YYYY-MM-DD"
+    endDate: string; // "YYYY-MM-DD"
 }
 
 export interface CalendarServiceContract {

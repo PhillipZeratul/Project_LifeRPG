@@ -7,7 +7,7 @@ import taskManifest from "@liferpg/plugin-core-task/manifest.json";
 
 export interface PluginDefinition {
     manifest: IPluginManifest;
-    loader: () => Promise<{default: new (ctx: IPluginContext) => BasePlugin}>;
+    loader: () => Promise<{ default: new (ctx: IPluginContext) => BasePlugin }>;
     service?: {
         id: string;
         methods?: string[];

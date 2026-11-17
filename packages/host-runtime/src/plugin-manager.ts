@@ -20,7 +20,7 @@ export class PluginManager {
     constructor(
         private eventBus: CentralEventBus,
         private bridge?: HostRpcBridge,
-        public readonly serviceRegistry?: CentralServiceRegistry
+        public readonly serviceRegistry?: CentralServiceRegistry,
     ) {
         for (const [id, def] of Object.entries(CORE_PLUGINS)) {
             this.registerPlugin(id, def);

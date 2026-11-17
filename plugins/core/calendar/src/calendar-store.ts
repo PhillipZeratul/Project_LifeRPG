@@ -80,8 +80,7 @@ export class LocalCalendarStore {
 
         const now = Date.now();
         const id =
-            params.id ||
-            (params.timeBlockId ? `ovr_${params.date}_${params.timeBlockId}` : generateId("override"));
+            params.id || (params.timeBlockId ? `ovr_${params.date}_${params.timeBlockId}` : generateId("override"));
         const created_at = params.created_at ?? now;
         const updated_at = params.updated_at ?? created_at;
 
@@ -331,7 +330,7 @@ export class LocalCalendarStore {
 
     public async getTimelineRange(
         params: GetTimelineRangeParams,
-        routineProvider?: (dayOfWeek?: number) => Promise<Routine[]> | Routine[]
+        routineProvider?: (dayOfWeek?: number) => Promise<Routine[]> | Routine[],
     ): Promise<CalendarTimelineRange> {
         const validation = validateGetTimelineRangeParams(params);
         if (!validation.valid) {

@@ -72,7 +72,7 @@ export function validatePluginManifest(manifest: unknown): ManifestValidationRes
             candidate.permissions.forEach((perm, index) => {
                 if (!isValidPermissionFormat(perm)) {
                     errors.push(
-                        `Invalid permission declaration at index ${index}: '${String(perm)}'. Expected format '<resource>:<action>' (e.g. 'avatar:read', 'habits:track') or wildcard '*'.`
+                        `Invalid permission declaration at index ${index}: '${String(perm)}'. Expected format '<resource>:<action>' (e.g. 'avatar:read', 'habits:track') or wildcard '*'.`,
                     );
                 }
             });

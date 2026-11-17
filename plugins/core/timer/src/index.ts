@@ -17,7 +17,9 @@ export default class FocusTimerPlugin extends BasePlugin {
     private currentDuration = 0;
 
     async onLoad() {
-        console.log(`[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`);
+        console.log(
+            `[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`,
+        );
 
         this.context.events.on(TimerEvents.Start, (payload) => {
             this.startTimer(payload.durationSeconds);
@@ -55,7 +57,7 @@ export default class FocusTimerPlugin extends BasePlugin {
 
     public startTimer(durationSeconds: number) {
         if (this.timerActive) {
-            console.log('Timer is already active');
+            console.log("Timer is already active");
             return;
         }
         console.log(`Starting timer for ${durationSeconds} seconds`);

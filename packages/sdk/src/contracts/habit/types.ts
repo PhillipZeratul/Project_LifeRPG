@@ -3,8 +3,8 @@ export interface Habit {
     name: string;
     description?: string;
     timeBlockId?: string; // Anchored to a Time Block, or undefined for standalone habit
-    statId?: string;      // Associated Avatar Stat (e.g. "focus", "vitality", "intellect")
-    xpReward?: number;    // Additive Experience (XP) awarded upon fulfillment
+    statId?: string; // Associated Avatar Stat (e.g. "focus", "vitality", "intellect")
+    xpReward?: number; // Additive Experience (XP) awarded upon fulfillment
     frequency?: "daily" | "weekly" | "custom";
     daysOfWeek?: number[]; // [0..6]
     targetPerDay?: number; // e.g. 1
@@ -127,7 +127,7 @@ export interface HabitHeatmapEntry {
 
 export interface HabitHeatmapOptions {
     startDate?: string; // "YYYY-MM-DD"
-    endDate?: string;   // "YYYY-MM-DD"
+    endDate?: string; // "YYYY-MM-DD"
     fillGaps?: boolean;
 }
 

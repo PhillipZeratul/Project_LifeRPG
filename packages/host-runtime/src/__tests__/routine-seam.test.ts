@@ -9,11 +9,7 @@ import {
     type DeleteEntityResult,
 } from "@liferpg/sdk";
 import RoutinePlugin from "@liferpg/plugin-core-routine";
-import {
-    HostRpcBridge,
-    CentralEventBus,
-    CentralServiceRegistry,
-} from "../index";
+import { HostRpcBridge, CentralEventBus, CentralServiceRegistry } from "../index";
 
 describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
     let bridge: HostRpcBridge;
@@ -287,17 +283,17 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
             expect(Array.isArray(routines)).toBe(true);
 
             // Writes must be rejected with PermissionDeniedError
-            await expect(
-                readOnlyClient.call("routine.create", { name: "Unauthorized" })
-            ).rejects.toBeInstanceOf(PermissionDeniedError);
+            await expect(readOnlyClient.call("routine.create", { name: "Unauthorized" })).rejects.toBeInstanceOf(
+                PermissionDeniedError,
+            );
 
             await expect(
-                readOnlyClient.call("routine.update", { id: "123", name: "Unauthorized" })
+                readOnlyClient.call("routine.update", { id: "123", name: "Unauthorized" }),
             ).rejects.toBeInstanceOf(PermissionDeniedError);
 
-            await expect(
-                readOnlyClient.call("routine.delete", { id: "123" })
-            ).rejects.toBeInstanceOf(PermissionDeniedError);
+            await expect(readOnlyClient.call("routine.delete", { id: "123" })).rejects.toBeInstanceOf(
+                PermissionDeniedError,
+            );
 
             await expect(
                 readOnlyClient.call("routine.createTimeBlock", {
@@ -305,7 +301,7 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
                     title: "Blocked",
                     startTime: "08:00",
                     endTime: "09:00",
-                })
+                }),
             ).rejects.toBeInstanceOf(PermissionDeniedError);
 
             readOnlyClient.dispose();
@@ -320,13 +316,9 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
             });
             const unauthClient = new RpcClient(unauthTransport);
 
-            await expect(unauthClient.call("routine.list")).rejects.toBeInstanceOf(
-                PermissionDeniedError
-            );
+            await expect(unauthClient.call("routine.list")).rejects.toBeInstanceOf(PermissionDeniedError);
 
-            await expect(unauthClient.call("routine.get", { id: "123" })).rejects.toBeInstanceOf(
-                PermissionDeniedError
-            );
+            await expect(unauthClient.call("routine.get", { id: "123" })).rejects.toBeInstanceOf(PermissionDeniedError);
 
             unauthClient.dispose();
             disconnectUnauth();
@@ -417,7 +409,7 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
                     title: "Bad Time Block",
                     startTime: "25:99",
                     endTime: "10:00",
-                })
+                }),
             ).rejects.toMatchObject({
                 code: "VALIDATION_FAILED",
             });
@@ -430,7 +422,7 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
                     title: "Orphan Block",
                     startTime: "09:00",
                     endTime: "10:00",
-                })
+                }),
             ).rejects.toMatchObject({
                 code: "NOT_FOUND",
             });
@@ -456,7 +448,7 @@ describe("Routine & Time Block Core Plugin Seam (Host RPC Bridge)", () => {
                     id: routine.id,
                     name: "Resurrection Attempt",
                     updated_at: baseTime + 1000,
-                })
+                }),
             ).rejects.toMatchObject({
                 code: "NOT_FOUND",
             });

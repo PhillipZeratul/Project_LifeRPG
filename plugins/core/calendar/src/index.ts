@@ -24,7 +24,7 @@ export default class CalendarPlugin extends BasePlugin {
     constructor(
         context: IPluginContext,
         store?: LocalCalendarStore,
-        routineProvider?: (dayOfWeek?: number) => Promise<Routine[]> | Routine[]
+        routineProvider?: (dayOfWeek?: number) => Promise<Routine[]> | Routine[],
     ) {
         super(context);
         this.store = store ?? CalendarPlugin.defaultStore;
@@ -52,7 +52,7 @@ export default class CalendarPlugin extends BasePlugin {
             try {
                 const result = await this.context.callRpc<ListRoutinesParams | undefined, Routine[]>(
                     "routine.list",
-                    dayOfWeek !== undefined ? { dayOfWeek } : undefined
+                    dayOfWeek !== undefined ? { dayOfWeek } : undefined,
                 );
                 return result ?? [];
             } catch {
@@ -65,7 +65,9 @@ export default class CalendarPlugin extends BasePlugin {
     }
 
     async onLoad(): Promise<void> {
-        console.log(`[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`);
+        console.log(
+            `[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`,
+        );
 
         if (this.context.registerRpcHandler) {
             // Timeline queries
@@ -75,7 +77,7 @@ export default class CalendarPlugin extends BasePlugin {
                     const routines = await this.fetchRoutines();
                     return this.store.getDayTimeline(params, routines);
                 },
-                { requiredPermissions: ["calendar:read"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:read"], serviceId: "calendar" },
             );
 
             this.context.registerRpcHandler<GetTimelineRangeParams>(
@@ -83,7 +85,7 @@ export default class CalendarPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getTimelineRange(params, (dayOfWeek) => this.fetchRoutines(dayOfWeek));
                 },
-                { requiredPermissions: ["calendar:read"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:read"], serviceId: "calendar" },
             );
 
             // Overrides CRUD
@@ -94,7 +96,7 @@ export default class CalendarPlugin extends BasePlugin {
                     this.context.events.emit(CalendarEvents.OverrideCreated, override);
                     return override;
                 },
-                { requiredPermissions: ["calendar:write"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:write"], serviceId: "calendar" },
             );
 
             this.context.registerRpcHandler<GetCalendarOverrideParams>(
@@ -102,7 +104,7 @@ export default class CalendarPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getOverride(params.id);
                 },
-                { requiredPermissions: ["calendar:read"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:read"], serviceId: "calendar" },
             );
 
             this.context.registerRpcHandler<ListCalendarOverridesParams | undefined>(
@@ -110,7 +112,7 @@ export default class CalendarPlugin extends BasePlugin {
                 async (params) => {
                     return this.store.listOverrides(params);
                 },
-                { requiredPermissions: ["calendar:read"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:read"], serviceId: "calendar" },
             );
 
             this.context.registerRpcHandler<UpdateCalendarOverrideParams>(
@@ -120,7 +122,7 @@ export default class CalendarPlugin extends BasePlugin {
                     this.context.events.emit(CalendarEvents.OverrideUpdated, updated);
                     return updated;
                 },
-                { requiredPermissions: ["calendar:write"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:write"], serviceId: "calendar" },
             );
 
             this.context.registerRpcHandler<DeleteCalendarOverrideParams>(
@@ -134,7 +136,7 @@ export default class CalendarPlugin extends BasePlugin {
                     });
                     return result;
                 },
-                { requiredPermissions: ["calendar:write"], serviceId: "calendar" }
+                { requiredPermissions: ["calendar:write"], serviceId: "calendar" },
             );
         }
     }

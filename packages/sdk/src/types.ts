@@ -11,12 +11,9 @@ export interface IPluginContext {
     registerRpcHandler?<TParams = unknown, TResult = unknown>(
         method: string,
         handler: (params: TParams, context?: unknown) => Promise<TResult> | TResult,
-        options?: unknown
+        options?: unknown,
     ): void;
-    callRpc?<TParams = unknown, TResult = unknown>(
-        method: string,
-        params?: TParams
-    ): Promise<TResult>;
+    callRpc?<TParams = unknown, TResult = unknown>(method: string, params?: TParams): Promise<TResult>;
 }
 
 export interface IPluginConstructor<T extends BasePlugin = BasePlugin> {

@@ -7,4 +7,4 @@ All communication between plugins and the host runtime traverses a typed asynchr
 
 ## Considered Options
 
-* **QuickJS in WebAssembly**: Rejected for now due to bundle size overhead and additional runtime complexity; native Web Workers and sandboxed iframes provide sufficient isolation for web-standard runtimes.
+- **QuickJS in WebAssembly**: Rejected for now due to bundle size overhead and additional runtime complexity; native Web Workers and sandboxed iframes provide sufficient isolation for web-standard runtimes.

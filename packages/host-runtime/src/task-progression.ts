@@ -5,10 +5,7 @@ import type { AvatarService } from "./avatar-service";
  * Connects Task completion events on CentralEventBus to AvatarService,
  * awarding strictly additive Experience (XP) on the Avatar progression engine without penalty.
  */
-export function wireTaskProgressionIntegration(
-    eventBus: IEventBus,
-    avatarService: AvatarService
-): () => void {
+export function wireTaskProgressionIntegration(eventBus: IEventBus, avatarService: AvatarService): () => void {
     return eventBus.on(TaskEvents.Completed, async (event) => {
         try {
             await avatarService.recordProgressionEvent({

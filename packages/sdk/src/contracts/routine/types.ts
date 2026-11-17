@@ -4,7 +4,7 @@ export interface TimeBlock {
     title: string;
     description?: string;
     startTime: string; // e.g. "09:00"
-    endTime: string;   // e.g. "10:30"
+    endTime: string; // e.g. "10:30"
     color?: string;
     created_at: number;
     updated_at: number;

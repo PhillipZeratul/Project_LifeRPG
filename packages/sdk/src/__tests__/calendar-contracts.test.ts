@@ -32,7 +32,7 @@ describe("Calendar Contracts & Schema Validation", () => {
             validateGetTimelineRangeParams({
                 startDate: "2026-11-17",
                 endDate: "2026-11-20",
-            }).valid
+            }).valid,
         ).toBe(true);
 
         // Same day range is valid
@@ -40,7 +40,7 @@ describe("Calendar Contracts & Schema Validation", () => {
             validateGetTimelineRangeParams({
                 startDate: "2026-11-17",
                 endDate: "2026-11-17",
-            }).valid
+            }).valid,
         ).toBe(true);
 
         // End date before start date is invalid
@@ -56,7 +56,7 @@ describe("Calendar Contracts & Schema Validation", () => {
             validateGetTimelineRangeParams({
                 startDate: "bad",
                 endDate: "2026-11-20",
-            }).valid
+            }).valid,
         ).toBe(false);
     });
 
@@ -69,7 +69,7 @@ describe("Calendar Contracts & Schema Validation", () => {
                 startTime: "09:30",
                 endTime: "11:00",
                 title: "Rescheduled Deep Work",
-            }).valid
+            }).valid,
         ).toBe(true);
 
         // Valid cancellation override
@@ -78,7 +78,7 @@ describe("Calendar Contracts & Schema Validation", () => {
                 date: "2026-11-17",
                 timeBlockId: "tb-1",
                 isCancelled: true,
-            }).valid
+            }).valid,
         ).toBe(true);
 
         // Valid standalone date block override
@@ -88,7 +88,7 @@ describe("Calendar Contracts & Schema Validation", () => {
                 title: "Doctor Appointment",
                 startTime: "14:00",
                 endTime: "15:00",
-            }).valid
+            }).valid,
         ).toBe(true);
 
         // Standalone block missing title or time
@@ -105,7 +105,7 @@ describe("Calendar Contracts & Schema Validation", () => {
                 date: "2026-11-17",
                 timeBlockId: "tb-1",
                 startTime: "9:00",
-            }).valid
+            }).valid,
         ).toBe(false);
     });
 
@@ -115,13 +115,13 @@ describe("Calendar Contracts & Schema Validation", () => {
                 id: "override-1",
                 title: "Updated Title",
                 startTime: "10:00",
-            }).valid
+            }).valid,
         ).toBe(true);
 
         expect(
             validateUpdateCalendarOverrideParams({
                 title: "Missing ID",
-            }).valid
+            }).valid,
         ).toBe(false);
     });
 

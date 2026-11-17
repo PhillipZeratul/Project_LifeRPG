@@ -30,7 +30,7 @@ export interface RpcHandlerOptions {
 
 export type RpcHandler<TParams = unknown, TResult = unknown> = (
     params: TParams,
-    context: RpcHandlerContext
+    context: RpcHandlerContext,
 ) => Promise<TResult> | TResult;
 
 export interface IServiceRegistryQuery {
@@ -76,7 +76,7 @@ export class HostRpcBridge {
     public registerHandler<TParams = unknown, TResult = unknown>(
         method: string,
         handler: RpcHandler<TParams, TResult>,
-        options?: RpcHandlerOptions
+        options?: RpcHandlerOptions,
     ): void {
         let requiredPermissions: string[] = [];
         if (options?.requiredPermissions) {
@@ -124,11 +124,7 @@ export class HostRpcBridge {
         return unlisten;
     }
 
-    public async call<TResult = unknown>(
-        method: string,
-        params?: unknown,
-        caller?: CallerContext
-    ): Promise<TResult> {
+    public async call<TResult = unknown>(method: string, params?: unknown, caller?: CallerContext): Promise<TResult> {
         const res = await this.dispatch(
             {
                 type: "request",
@@ -136,7 +132,7 @@ export class HostRpcBridge {
                 method,
                 params,
             },
-            caller
+            caller,
         );
         if (!res.success) {
             throw new Error(res.error?.message || `RPC call failed for ${method}`);
@@ -205,7 +201,7 @@ export class HostRpcBridge {
         if (record.requiredPermissions.length > 0) {
             const callerPermissions = caller?.permissions ?? [];
             const missingPermission = record.requiredPermissions.find(
-                (reqPerm) => !hasPermission(callerPermissions, reqPerm)
+                (reqPerm) => !hasPermission(callerPermissions, reqPerm),
             );
 
             if (missingPermission) {

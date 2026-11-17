@@ -39,7 +39,9 @@ export default class RoutinePlugin extends BasePlugin {
     }
 
     async onLoad(): Promise<void> {
-        console.log(`[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`);
+        console.log(
+            `[Plugin] Initializing ${this.manifest.displayName || this.manifest.name} ${this.manifest.version}`,
+        );
 
         if (this.context.registerRpcHandler) {
             // Routine CRUD
@@ -50,7 +52,7 @@ export default class RoutinePlugin extends BasePlugin {
                     this.context.events.emit(RoutineEvents.Created, routine);
                     return routine;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<GetRoutineParams>(
@@ -58,7 +60,7 @@ export default class RoutinePlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getRoutine(params.id);
                 },
-                { requiredPermissions: ["routines:read"], serviceId: "routine" }
+                { requiredPermissions: ["routines:read"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<ListRoutinesParams | undefined>(
@@ -66,7 +68,7 @@ export default class RoutinePlugin extends BasePlugin {
                 async (params) => {
                     return this.store.listRoutines(params);
                 },
-                { requiredPermissions: ["routines:read"], serviceId: "routine" }
+                { requiredPermissions: ["routines:read"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<UpdateRoutineParams>(
@@ -76,7 +78,7 @@ export default class RoutinePlugin extends BasePlugin {
                     this.context.events.emit(RoutineEvents.Updated, updated);
                     return updated;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<DeleteRoutineParams>(
@@ -87,7 +89,7 @@ export default class RoutinePlugin extends BasePlugin {
                     this.context.events.emit(RoutineEvents.Deleted, { id: params.id, routine: existing });
                     return result;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
 
             // Time Block CRUD
@@ -98,7 +100,7 @@ export default class RoutinePlugin extends BasePlugin {
                     this.context.events.emit(RoutineEvents.TimeBlockCreated, timeBlock);
                     return timeBlock;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<GetTimeBlockParams>(
@@ -106,7 +108,7 @@ export default class RoutinePlugin extends BasePlugin {
                 async (params) => {
                     return this.store.getTimeBlock(params.id);
                 },
-                { requiredPermissions: ["routines:read"], serviceId: "routine" }
+                { requiredPermissions: ["routines:read"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<ListTimeBlocksParams | undefined>(
@@ -114,7 +116,7 @@ export default class RoutinePlugin extends BasePlugin {
                 async (params) => {
                     return this.store.listTimeBlocks(params);
                 },
-                { requiredPermissions: ["routines:read"], serviceId: "routine" }
+                { requiredPermissions: ["routines:read"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<UpdateTimeBlockParams>(
@@ -124,7 +126,7 @@ export default class RoutinePlugin extends BasePlugin {
                     this.context.events.emit(RoutineEvents.TimeBlockUpdated, updated);
                     return updated;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
 
             this.context.registerRpcHandler<DeleteTimeBlockParams>(
@@ -139,7 +141,7 @@ export default class RoutinePlugin extends BasePlugin {
                     });
                     return result;
                 },
-                { requiredPermissions: ["routines:write"], serviceId: "routine" }
+                { requiredPermissions: ["routines:write"], serviceId: "routine" },
             );
         }
     }

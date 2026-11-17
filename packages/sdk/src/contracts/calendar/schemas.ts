@@ -21,11 +21,7 @@ export function isValidDateString(date: unknown): boolean {
     if (day < 1 || day > 31) return false;
 
     const d = new Date(Date.UTC(year, month - 1, day));
-    return (
-        d.getUTCFullYear() === year &&
-        d.getUTCMonth() === month - 1 &&
-        d.getUTCDate() === day
-    );
+    return d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day;
 }
 
 export function validateGetDayTimelineParams(params: unknown): ValidationResult {

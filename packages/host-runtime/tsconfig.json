@@ -1,16 +1,16 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist"
-  },
-  "include": ["src"],
-  "references": [
-    { "path": "../sdk" },
-    { "path": "../../plugins/core/timer" },
-    { "path": "../../plugins/core/routine" },
-    { "path": "../../plugins/core/calendar" },
-    { "path": "../../plugins/core/habit" },
-    { "path": "../../plugins/core/task" }
-  ]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist"
+    },
+    "include": ["src"],
+    "references": [
+        { "path": "../sdk" },
+        { "path": "../../plugins/core/timer" },
+        { "path": "../../plugins/core/routine" },
+        { "path": "../../plugins/core/calendar" },
+        { "path": "../../plugins/core/habit" },
+        { "path": "../../plugins/core/task" }
+    ]
 }

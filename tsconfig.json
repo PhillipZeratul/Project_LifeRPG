@@ -1,15 +1,15 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./packages/sdk" },
-    { "path": "./packages/host-runtime" },
-    { "path": "./packages/ui" },
-    { "path": "./plugins/core/timer" },
-    { "path": "./plugins/core/routine" },
-    { "path": "./plugins/core/calendar" },
-    { "path": "./plugins/core/habit" },
-    { "path": "./plugins/core/task" },
-    { "path": "./apps/desktop" },
-    { "path": "./apps/mobile" }
-  ]
+    "files": [],
+    "references": [
+        { "path": "./packages/sdk" },
+        { "path": "./packages/host-runtime" },
+        { "path": "./packages/ui" },
+        { "path": "./plugins/core/timer" },
+        { "path": "./plugins/core/routine" },
+        { "path": "./plugins/core/calendar" },
+        { "path": "./plugins/core/habit" },
+        { "path": "./plugins/core/task" },
+        { "path": "./apps/desktop" },
+        { "path": "./apps/mobile" }
+    ]
 }

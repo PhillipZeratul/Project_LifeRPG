@@ -1,10 +1,4 @@
-import type {
-    IPluginContext,
-    IPluginManifest,
-    IEventBus,
-    IEventDefinition,
-    EventCallback,
-} from "@liferpg/sdk";
+import type { IPluginContext, IPluginManifest, IEventBus, IEventDefinition, EventCallback } from "@liferpg/sdk";
 import type { HostRpcBridge, RpcHandler, RpcHandlerOptions } from "./rpc-bridge";
 
 export class ScopedPluginContext implements IPluginContext {
@@ -15,7 +9,7 @@ export class ScopedPluginContext implements IPluginContext {
     constructor(
         manifest: IPluginManifest,
         globalBus: IEventBus,
-        private bridge?: HostRpcBridge
+        private bridge?: HostRpcBridge,
     ) {
         this.manifest = manifest;
 
@@ -33,7 +27,7 @@ export class ScopedPluginContext implements IPluginContext {
     public registerRpcHandler<TParams = unknown, TResult = unknown>(
         method: string,
         handler: RpcHandler<TParams, TResult>,
-        options?: RpcHandlerOptions
+        options?: RpcHandlerOptions,
     ): void {
         if (!this.bridge) {
             return;
@@ -50,10 +44,7 @@ export class ScopedPluginContext implements IPluginContext {
         });
     }
 
-    public async callRpc<TParams = unknown, TResult = unknown>(
-        method: string,
-        params?: TParams
-    ): Promise<TResult> {
+    public async callRpc<TParams = unknown, TResult = unknown>(method: string, params?: TParams): Promise<TResult> {
         if (!this.bridge) {
             throw new Error("RPC bridge is not available in ScopedPluginContext");
         }

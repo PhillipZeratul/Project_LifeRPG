@@ -35,10 +35,7 @@ export class LocalTaskStore {
     public createTask(params: CreateTaskParams): Task {
         const validation = validateCreateTaskParams(params);
         if (!validation.valid) {
-            throw new TaskStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new TaskStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const now = Date.now();
@@ -107,9 +104,7 @@ export class LocalTaskStore {
         if (params) {
             if (params.timeBlockId !== undefined) {
                 results = results.filter(
-                    (t) =>
-                        t.timeBlockId === params.timeBlockId ||
-                        t.timeBlockIds?.includes(params.timeBlockId!)
+                    (t) => t.timeBlockId === params.timeBlockId || t.timeBlockIds?.includes(params.timeBlockId!),
                 );
             }
             if (params.completed !== undefined) {
@@ -132,10 +127,7 @@ export class LocalTaskStore {
     public updateTask(params: UpdateTaskParams): Task {
         const validation = validateUpdateTaskParams(params);
         if (!validation.valid) {
-            throw new TaskStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new TaskStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const existing = this.tasks.get(params.id);
@@ -196,10 +188,7 @@ export class LocalTaskStore {
     public scheduleTask(params: ScheduleTaskParams): Task {
         const validation = validateScheduleTaskParams(params);
         if (!validation.valid) {
-            throw new TaskStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new TaskStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const existing = this.tasks.get(params.id);
@@ -236,10 +225,7 @@ export class LocalTaskStore {
     public completeTask(params: CompleteTaskParams): CompleteTaskResult {
         const validation = validateCompleteTaskParams(params);
         if (!validation.valid) {
-            throw new TaskStoreError(
-                "VALIDATION_FAILED",
-                validation.errors?.join("; ") || "Invalid params"
-            );
+            throw new TaskStoreError("VALIDATION_FAILED", validation.errors?.join("; ") || "Invalid params");
         }
 
         const existing = this.tasks.get(params.id);
