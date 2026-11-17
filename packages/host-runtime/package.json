@@ -12,11 +12,15 @@
         }
     },
     "dependencies": {
-        "@liferpg/sdk": "workspace:*",
-        "@liferpg/plugin-core-timer": "workspace:*"
+        "@liferpg/plugin-core-timer": "workspace:*",
+        "@liferpg/sdk": "workspace:*"
     },
     "scripts": {
         "build": "tsc -b",
+        "test": "vitest run",
         "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "vitest": "^5.1.0"
     }
 }

@@ -5,6 +5,7 @@
     "scripts": {
         "dev:desktop": "pnpm --filter @liferpg/desktop dev",
         "build": "pnpm -r run build",
+        "test": "vitest run",
         "typecheck": "tsc -b",
         "lint": "eslint .",
         "mobile:sync": "pnpm --filter @liferpg/mobile mobile:sync",
@@ -16,6 +17,7 @@
         "@types/node": "^26.6.2",
         "eslint": "^10.10.0",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.70.0"
+        "typescript-eslint": "^8.70.0",
+        "vitest": "^5.1.0"
     }
 }
