@@ -124,6 +124,26 @@ export class HostRpcBridge {
         return unlisten;
     }
 
+    public async call<TResult = unknown>(
+        method: string,
+        params?: unknown,
+        caller?: CallerContext
+    ): Promise<TResult> {
+        const res = await this.dispatch(
+            {
+                type: "request",
+                id: "internal_" + Math.random().toString(36).substring(2, 9),
+                method,
+                params,
+            },
+            caller
+        );
+        if (!res.success) {
+            throw new Error(res.error?.message || `RPC call failed for ${method}`);
+        }
+        return res.result as TResult;
+    }
+
     public async dispatch(request: RpcRequest, caller?: CallerContext): Promise<RpcResponse> {
         const { id, method, params } = request;
 

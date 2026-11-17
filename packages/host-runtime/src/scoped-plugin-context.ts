@@ -50,6 +50,19 @@ export class ScopedPluginContext implements IPluginContext {
         });
     }
 
+    public async callRpc<TParams = unknown, TResult = unknown>(
+        method: string,
+        params?: TParams
+    ): Promise<TResult> {
+        if (!this.bridge) {
+            throw new Error("RPC bridge is not available in ScopedPluginContext");
+        }
+        return this.bridge.call<TResult>(method, params, {
+            callerId: this.manifest.name,
+            permissions: this.manifest.permissions,
+        });
+    }
+
     public addDisposable(disposable: () => void): void {
         this.cleanups.push(disposable);
     }

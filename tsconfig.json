@@ -6,6 +6,7 @@
     { "path": "./packages/ui" },
     { "path": "./plugins/core/timer" },
     { "path": "./plugins/core/routine" },
+    { "path": "./plugins/core/calendar" },
     { "path": "./apps/desktop" },
     { "path": "./apps/mobile" }
   ]

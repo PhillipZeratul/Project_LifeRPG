@@ -30,6 +30,10 @@ export default class RoutinePlugin extends BasePlugin {
         RoutinePlugin.defaultStore = new LocalRoutineStore();
     }
 
+    public static getDefaultStore(): LocalRoutineStore {
+        return RoutinePlugin.defaultStore;
+    }
+
     public getStore(): LocalRoutineStore {
         return this.store;
     }

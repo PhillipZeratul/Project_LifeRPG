@@ -1,6 +1,7 @@
 import type { IPluginManifest, BasePlugin, IPluginContext } from "@liferpg/sdk";
 import timerManifest from "@liferpg/plugin-core-timer/manifest.json";
 import routineManifest from "@liferpg/plugin-core-routine/manifest.json";
+import calendarManifest from "@liferpg/plugin-core-calendar/manifest.json";
 
 export interface PluginDefinition {
     manifest: IPluginManifest;
@@ -32,6 +33,22 @@ export const BUILTIN_PLUGINS: Record<string, PluginDefinition> = {
                 "routine.listTimeBlocks",
                 "routine.updateTimeBlock",
                 "routine.deleteTimeBlock",
+            ],
+        },
+    },
+    "@liferpg/plugin-core-calendar": {
+        manifest: calendarManifest as unknown as IPluginManifest,
+        loader: () => import("@liferpg/plugin-core-calendar"),
+        service: {
+            id: "calendar",
+            methods: [
+                "calendar.getDayTimeline",
+                "calendar.getTimelineRange",
+                "calendar.createOverride",
+                "calendar.getOverride",
+                "calendar.listOverrides",
+                "calendar.updateOverride",
+                "calendar.deleteOverride",
             ],
         },
     },

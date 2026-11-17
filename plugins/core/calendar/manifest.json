@@ -1,0 +1,9 @@
+{
+    "name": "@liferpg/plugin-core-calendar",
+    "version": "0.1.0",
+    "displayName": "Calendar Core Plugin",
+    "author": "Phillix",
+    "description": "Core calendar temporal canvas service for LifeRPG",
+    "dependencies": {},
+    "permissions": ["calendar:read", "calendar:write", "routines:read"]
+}
