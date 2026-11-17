@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@liferpg/plugin-core-calendar": "workspace:*",
+        "@liferpg/plugin-core-habit": "workspace:*",
         "@liferpg/plugin-core-routine": "workspace:*",
         "@liferpg/plugin-core-timer": "workspace:*",
         "@liferpg/sdk": "workspace:*"

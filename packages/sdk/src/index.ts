@@ -5,4 +5,5 @@ export * from "./foundation/rpc";
 export * from "./foundation/avatar";
 export * from "./contracts/routine";
 export * from "./contracts/calendar";
+export * from "./contracts/habit";
 

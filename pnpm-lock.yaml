@@ -169,6 +169,9 @@ importers:
       '@liferpg/plugin-core-calendar':
         specifier: workspace:*
         version: link:../../plugins/core/calendar
+      '@liferpg/plugin-core-habit':
+        specifier: workspace:*
+        version: link:../../plugins/core/habit
       '@liferpg/plugin-core-routine':
         specifier: workspace:*
         version: link:../../plugins/core/routine
@@ -219,6 +222,12 @@ importers:
 
   plugins/core/calendar:
     dependencies:
+      '@liferpg/sdk':
+        specifier: workspace:*
+        version: link:../../../packages/sdk
+
+  plugins/core/habit:
+    devDependencies:
       '@liferpg/sdk':
         specifier: workspace:*
         version: link:../../../packages/sdk

@@ -1,0 +1,9 @@
+{
+    "name": "@liferpg/plugin-core-habit",
+    "version": "0.1.0",
+    "displayName": "Habit Core Plugin",
+    "author": "Phillix",
+    "description": "Core habit tracking and progression integration plugin for LifeRPG",
+    "dependencies": {},
+    "permissions": ["habits:read", "habits:track", "habits:write"]
+}

@@ -11,6 +11,8 @@ export { CentralEventBus } from "./central-event-bus";
 export { PluginManager } from "./plugin-manager";
 export { ScopedPluginContext } from "./scoped-plugin-context";
 export { LocalRoutineStore, RoutineStoreError, default as RoutinePlugin } from "@liferpg/plugin-core-routine";
+export { LocalHabitStore, HabitStoreError, default as HabitPlugin } from "@liferpg/plugin-core-habit";
+export { wireHabitProgressionIntegration } from "./habit-progression";
 
 
 const bus = new CentralEventBus();
