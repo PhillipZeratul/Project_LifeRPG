@@ -3,8 +3,12 @@ import { CentralEventBus } from "./central-event-bus";
 import { PluginManager } from "./plugin-manager";
 
 export * from "./rpc-bridge";
+export * from "./progression-store";
+export * from "./avatar-service";
+export * from "./avatar-rpc";
 export { CentralEventBus } from "./central-event-bus";
 export { PluginManager } from "./plugin-manager";
+
 
 const bus = new CentralEventBus();
 const manager = new PluginManager(bus);
